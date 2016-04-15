@@ -12,7 +12,7 @@
             <f:textbox />
         </f:entry>
 
-        <f:entry title="Use Githab repository permissions" field="useRepositoryPermissions" help="/plugin/gitlab-oauth/help/auth/use-repository-permissions-help.html">
+        <f:entry title="Use Gitlab repository permissions" field="useRepositoryPermissions" help="/plugin/gitlab-oauth/help/auth/use-repository-permissions-help.html">
             <f:checkbox />
         </f:entry>
 
@@ -24,7 +24,7 @@
             <f:checkbox />
         </f:entry>
 
-        <f:entry title="Grant READ permissions for /gitlab-webhook" field="allowGithabWebHookPermission" help="/plugin/gitlab-oauth/help/auth/grant-read-to-gitlab-webhook-help.html">
+        <f:entry title="Grant READ permissions for /gitlab-webhook" field="allowGitlabWebHookPermission" help="/plugin/gitlab-oauth/help/auth/grant-read-to-gitlab-webhook-help.html">
             <f:checkbox />
         </f:entry>
 

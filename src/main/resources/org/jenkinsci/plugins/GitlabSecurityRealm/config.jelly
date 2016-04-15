@@ -20,8 +20,5 @@
             <f:textbox />
         </f:entry>
 
-        <f:entry title="OAuth Scope(s)" field="oauthScopes" help="/plugin/gitlab-oauth/help/realm/oauth-scopes-help.html">
-            <f:textbox default="${descriptor.getDefaultOauthScopes()}" />
-        </f:entry>
     </f:section>
 </j:jelly>

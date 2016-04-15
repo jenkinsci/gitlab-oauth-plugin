@@ -26,32 +26,18 @@ THE SOFTWARE.
  */
 package org.jenkinsci.plugins;
 
-import hudson.Extension;
-import hudson.Util;
-import hudson.model.Item;
-import hudson.model.AbstractProject;
-import hudson.model.BuildAuthorizationToken;
-import hudson.model.Descriptor;
-import hudson.model.Job;
-import hudson.model.Node;
-import hudson.model.Project;
-import hudson.security.ACL;
-import hudson.security.AuthorizationStrategy;
-import hudson.security.Permission;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
-import jenkins.model.Jenkins;
-
-import org.acegisecurity.Authentication;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.Stapler;
+
+import hudson.Extension;
+import hudson.model.AbstractProject;
+import hudson.model.Descriptor;
+import hudson.model.Job;
+import hudson.security.ACL;
+import hudson.security.AuthorizationStrategy;
 
 /**
  * @author mocleiri

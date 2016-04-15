@@ -122,10 +122,6 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                 if (authenticationToken.hasOrganizationPermission(
                         candidateName, organizationName)) {
 
-                    String[] parts = permission.getId().split("\\.");
-
-                    String test = parts[parts.length - 1].toLowerCase();
-
                     if (checkReadPermission(permission)
                             || testBuildPermission(permission)) {
                         // check the permission
