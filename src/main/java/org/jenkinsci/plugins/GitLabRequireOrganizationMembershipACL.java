@@ -48,17 +48,17 @@ import org.kohsuke.stapler.StaplerRequest;
  * @author Mike
  *
  */
-public class GithubRequireOrganizationMembershipACL extends ACL {
+public class GitLabRequireOrganizationMembershipACL extends ACL {
 
     private static final Logger log = Logger
-            .getLogger(GithubRequireOrganizationMembershipACL.class.getName());
+            .getLogger(GitLabRequireOrganizationMembershipACL.class.getName());
 
     private final List<String> organizationNameList;
     private final List<String> adminUserNameList;
     private final boolean authenticatedUserReadPermission;
     private final boolean useRepositoryPermissions;
     private final boolean authenticatedUserCreateJobPermission;
-    private final boolean allowGithubWebHookPermission;
+    private final boolean allowGitlabWebHookPermission;
     private final boolean allowCcTrayPermission;
     private final boolean allowAnonymousReadPermission;
     private final boolean allowAnonymousJobStatusPermission;
@@ -72,11 +72,11 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
      */
     @Override
     public boolean hasPermission(Authentication a, Permission permission) {
-        if (a != null && a instanceof GithubAuthenticationToken) {
+        if (a != null && a instanceof GitLabAuthenticationToken) {
             if (!a.isAuthenticated())
                 return false;
 
-            GithubAuthenticationToken authenticationToken = (GithubAuthenticationToken) a;
+            GitLabAuthenticationToken authenticationToken = (GitLabAuthenticationToken) a;
 
             String candidateName = a.getName();
 
@@ -158,10 +158,10 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
                     if (allowAnonymousReadPermission) {
                         return true;
                     }
-                    if (allowGithubWebHookPermission &&
-                            (currentUriPathEquals("github-webhook") ||
-                             currentUriPathEquals("github-webhook/"))) {
-                        log.finest("Granting READ access for github-webhook url: " + requestURI());
+                    if (allowGitlabWebHookPermission &&
+                            (currentUriPathEquals("gitlab-webhook") ||
+                             currentUriPathEquals("gitlab-webhook/"))) {
+                        log.finest("Granting READ access for gitlab-webhook url: " + requestURI());
                         return true;
                     }
                     if (allowCcTrayPermission && currentUriPathEquals("cc.xml")) {
@@ -224,7 +224,7 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
         return permission.getId().equals("hudson.model.Item.ViewStatus");
     }
 
-    public boolean hasRepositoryPermission(GithubAuthenticationToken authenticationToken, Permission permission) {
+    public boolean hasRepositoryPermission(GitLabAuthenticationToken authenticationToken, Permission permission) {
         String repositoryName = getRepositoryName();
 
         if (repositoryName == null) {
@@ -257,9 +257,9 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
             if (!userRemoteConfigs.isEmpty()) {
                 String repoUrl = userRemoteConfigs.get(0).getUrl();
                 if (repoUrl != null) {
-                    GitHubRepositoryName githubRepositoryName = GitHubRepositoryName.create(repoUrl);
-                    if (githubRepositoryName != null) {
-                        repositoryName = githubRepositoryName.userName + "/" + githubRepositoryName.repositoryName;
+                    GitlabRepositoryName gitlabRepositoryName = GitlabRepositoryName.create(repoUrl);
+                    if (gitlabRepositoryName != null) {
+                        repositoryName = gitlabRepositoryName.userName + "/" + gitlabRepositoryName.repositoryName;
                     }
                 }
             }
@@ -267,12 +267,12 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
         return repositoryName;
     }
 
-    public GithubRequireOrganizationMembershipACL(String adminUserNames,
+    public GitLabRequireOrganizationMembershipACL(String adminUserNames,
             String organizationNames,
             boolean authenticatedUserReadPermission,
             boolean useRepositoryPermissions,
             boolean authenticatedUserCreateJobPermission,
-            boolean allowGithubWebHookPermission,
+            boolean allowGitlabWebHookPermission,
             boolean allowCcTrayPermission,
             boolean allowAnonymousReadPermission,
             boolean allowAnonymousJobStatusPermission) {
@@ -281,7 +281,7 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
         this.authenticatedUserReadPermission      = authenticatedUserReadPermission;
         this.useRepositoryPermissions             = useRepositoryPermissions;
         this.authenticatedUserCreateJobPermission = authenticatedUserCreateJobPermission;
-        this.allowGithubWebHookPermission         = allowGithubWebHookPermission;
+        this.allowGitlabWebHookPermission         = allowGitlabWebHookPermission;
         this.allowCcTrayPermission                = allowCcTrayPermission;
         this.allowAnonymousReadPermission         = allowAnonymousReadPermission;
         this.allowAnonymousJobStatusPermission    = allowAnonymousJobStatusPermission;
@@ -304,12 +304,12 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
         this.project = null;
     }
 
-    public GithubRequireOrganizationMembershipACL(List<String> adminUserNameList,
+    public GitLabRequireOrganizationMembershipACL(List<String> adminUserNameList,
             List<String> organizationNameList,
             boolean authenticatedUserReadPermission,
             boolean useRepositoryPermissions,
             boolean authenticatedUserCreateJobPermission,
-            boolean allowGithubWebHookPermission,
+            boolean allowGitlabWebHookPermission,
             boolean allowCcTrayPermission,
             boolean allowAnonymousReadPermission,
             boolean allowAnonymousJobStatusPermission,
@@ -321,21 +321,21 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
         this.authenticatedUserReadPermission      = authenticatedUserReadPermission;
         this.useRepositoryPermissions             = useRepositoryPermissions;
         this.authenticatedUserCreateJobPermission = authenticatedUserCreateJobPermission;
-        this.allowGithubWebHookPermission         = allowGithubWebHookPermission;
+        this.allowGitlabWebHookPermission         = allowGitlabWebHookPermission;
         this.allowCcTrayPermission                = allowCcTrayPermission;
         this.allowAnonymousReadPermission         = allowAnonymousReadPermission;
         this.allowAnonymousJobStatusPermission    = allowAnonymousJobStatusPermission;
         this.project                              = project;
     }
 
-    public GithubRequireOrganizationMembershipACL cloneForProject(AbstractProject project) {
-        return new GithubRequireOrganizationMembershipACL(
+    public GitLabRequireOrganizationMembershipACL cloneForProject(AbstractProject project) {
+        return new GitLabRequireOrganizationMembershipACL(
             this.adminUserNameList,
             this.organizationNameList,
             this.authenticatedUserReadPermission,
             this.useRepositoryPermissions,
             this.authenticatedUserCreateJobPermission,
-            this.allowGithubWebHookPermission,
+            this.allowGitlabWebHookPermission,
             this.allowCcTrayPermission,
             this.allowAnonymousReadPermission,
             this.allowAnonymousJobStatusPermission,
@@ -362,8 +362,8 @@ public class GithubRequireOrganizationMembershipACL extends ACL {
         return authenticatedUserReadPermission;
     }
 
-    public boolean isAllowGithubWebHookPermission() {
-        return allowGithubWebHookPermission;
+    public boolean isAllowGitlabWebHookPermission() {
+        return allowGitlabWebHookPermission;
     }
 
     public boolean isAllowCcTrayPermission() {

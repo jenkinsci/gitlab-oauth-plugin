@@ -1,7 +1,13 @@
 /**
- The MIT License
+The MIT License
 
-Copyright (c) 2015 Sam Gleske
+Copyright (c) 2011 Michael O'Cleirigh
+
+ Copied from mysql-auth-plugin on July 18, 2011
+
+ Signals a failed authentication attempt to the external database.
+
+ Original Copyright (c)  Alex Ackerman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,27 +26,41 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- */
 
+
+
+ */
 package org.jenkinsci.plugins;
 
-import java.io.IOException;
-import junit.framework.TestCase;
-import org.junit.runner.RunWith;
-import org.junit.Test;
+import org.acegisecurity.AuthenticationException;
 
-public class GithubAuthorizationStrategyTest extends TestCase {
-    @Test
-    public void testEquals_true() {
-        GithubAuthorizationStrategy a = new GithubAuthorizationStrategy(new String(""), false, true, false, new String(""), false, false, false, false);
-        GithubAuthorizationStrategy b = new GithubAuthorizationStrategy(new String(""), false, true, false, new String(""), false, false, false, false);
-        assertTrue(a.equals(b));
+/**
+ *
+ *
+ */
+public class GitLabAuthenticationException extends AuthenticationException {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4047568830613474074L;
+
+	/**
+     * Standard constructor
+     * @param msg   The error message for the Exception
+     * @param t     The Throwable to send along
+     */
+    public GitLabAuthenticationException(String msg, Throwable t) {
+        super(msg, t);
     }
-    @Test
-    public void testEquals_false() {
-        GithubAuthorizationStrategy a = new GithubAuthorizationStrategy(new String(""), false, true, false, new String(""), false, false, false, false);
-        GithubAuthorizationStrategy b = new GithubAuthorizationStrategy(new String(""), false, false, false, new String(""), false, false, false, false);
-        assertFalse(a.equals(b));
-        assertFalse(a.equals(""));
+
+    /**
+     * Standard constructor
+     *
+     * @param msg   The error message for the exception
+     */
+    public GitLabAuthenticationException(String msg) {
+        super(msg);
     }
+
 }

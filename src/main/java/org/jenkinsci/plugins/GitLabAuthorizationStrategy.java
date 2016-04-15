@@ -59,55 +59,36 @@ import org.kohsuke.stapler.Stapler;
  *
  *
  */
-public class GithubAuthorizationStrategy extends AuthorizationStrategy {
-    @Deprecated
-    public GithubAuthorizationStrategy(String adminUserNames,
-            boolean authenticatedUserReadPermission,
-            boolean useRepositoryPermissions,
-            String organizationNames,
-            boolean allowGithubWebHookPermission,
-            boolean allowCcTrayPermission,
-            boolean allowAnonymousReadPermission,
-            boolean allowAnonymousJobStatusPermission) {
-        this(adminUserNames,
-                authenticatedUserReadPermission,
-                useRepositoryPermissions,
-                false,
-                organizationNames,
-                allowGithubWebHookPermission,
-                allowCcTrayPermission,
-                allowAnonymousReadPermission,
-                allowAnonymousJobStatusPermission);
-    }
+public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @param allowAnonymousReadPermission
      * @since 0.19
      */
     @DataBoundConstructor
-    public GithubAuthorizationStrategy(String adminUserNames,
+    public GitLabAuthorizationStrategy(String adminUserNames,
             boolean authenticatedUserReadPermission,
             boolean useRepositoryPermissions,
             boolean authenticatedUserCreateJobPermission,
             String organizationNames,
-            boolean allowGithubWebHookPermission,
+            boolean allowGitlabWebHookPermission,
             boolean allowCcTrayPermission,
             boolean allowAnonymousReadPermission,
             boolean allowAnonymousJobStatusPermission) {
         super();
 
-        rootACL = new GithubRequireOrganizationMembershipACL(adminUserNames,
+        rootACL = new GitLabRequireOrganizationMembershipACL(adminUserNames,
                 organizationNames,
                 authenticatedUserReadPermission,
                 useRepositoryPermissions,
                 authenticatedUserCreateJobPermission,
-                allowGithubWebHookPermission,
+                allowGitlabWebHookPermission,
                 allowCcTrayPermission,
                 allowAnonymousReadPermission,
                 allowAnonymousJobStatusPermission);
     }
 
-    private final GithubRequireOrganizationMembershipACL rootACL;
+    private final GitLabRequireOrganizationMembershipACL rootACL;
 
     /*
      * (non-Javadoc)
@@ -122,8 +103,8 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
     public ACL getACL(Job<?,?> job) {
         if(job instanceof AbstractProject) {
             AbstractProject project = (AbstractProject)job;
-            GithubRequireOrganizationMembershipACL githubACL = (GithubRequireOrganizationMembershipACL) getRootACL();
-            return githubACL.cloneForProject(project);
+            GitLabRequireOrganizationMembershipACL gitlabACL = (GitLabRequireOrganizationMembershipACL) getRootACL();
+            return gitlabACL.cloneForProject(project);
         } else {
             return getRootACL();
         }
@@ -145,7 +126,7 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @return
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#getOrganizationNameList()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#getOrganizationNameList()
      */
     public String getOrganizationNames() {
         return StringUtils.join(rootACL.getOrganizationNameList().iterator(), ", ");
@@ -153,7 +134,7 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @return
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#getAdminUserNameList()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#getAdminUserNameList()
      */
     public String getAdminUserNames() {
         return StringUtils.join(rootACL.getAdminUserNameList().iterator(), ", ");
@@ -161,7 +142,7 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @return
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#isUseRepositoryPermissions()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isUseRepositoryPermissions()
      */
     public boolean isUseRepositoryPermissions() {
         return rootACL.isUseRepositoryPermissions();
@@ -169,7 +150,7 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @return
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#isAuthenticatedUserCreateJobPermission()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserCreateJobPermission()
      */
     public boolean isAuthenticatedUserCreateJobPermission() {
         return rootACL.isAuthenticatedUserCreateJobPermission();
@@ -177,7 +158,7 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @return
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#isAuthenticatedUserReadPermission()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserReadPermission()
      */
     public boolean isAuthenticatedUserReadPermission() {
         return rootACL.isAuthenticatedUserReadPermission();
@@ -185,15 +166,15 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @return
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#isAllowGithubWebHookPermission()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowGitlabWebHookPermission()
      */
-    public boolean isAllowGithubWebHookPermission() {
-        return rootACL.isAllowGithubWebHookPermission();
+    public boolean isAllowGitlabWebHookPermission() {
+        return rootACL.isAllowGitlabWebHookPermission();
     }
 
     /**
      * @return
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#isAllowCcTrayPermission()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowCcTrayPermission()
      */
     public boolean isAllowCcTrayPermission() {
         return rootACL.isAllowCcTrayPermission();
@@ -202,14 +183,14 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @return
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#isAllowAnonymousReadPermission()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowAnonymousReadPermission()
      */
     public boolean isAllowAnonymousReadPermission() {
         return rootACL.isAllowAnonymousReadPermission();
     }
 
     /**
-     * @see org.jenkinsci.plugins.GithubRequireOrganizationMembershipACL#isAllowAnonymousJobStatusPermission()
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowAnonymousJobStatusPermission()
      * @return
      */
     public boolean isAllowAnonymousJobStatusPermission() {
@@ -223,14 +204,14 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
      */
     @Override
     public boolean equals(Object object){
-        if(object instanceof GithubAuthorizationStrategy) {
-            GithubAuthorizationStrategy obj = (GithubAuthorizationStrategy) object;
+        if(object instanceof GitLabAuthorizationStrategy) {
+            GitLabAuthorizationStrategy obj = (GitLabAuthorizationStrategy) object;
             return this.getOrganizationNames().equals(obj.getOrganizationNames()) &&
                 this.getAdminUserNames().equals(obj.getAdminUserNames()) &&
                 this.isUseRepositoryPermissions() == obj.isUseRepositoryPermissions() &&
                 this.isAuthenticatedUserCreateJobPermission() == obj.isAuthenticatedUserCreateJobPermission() &&
                 this.isAuthenticatedUserReadPermission() == obj.isAuthenticatedUserReadPermission() &&
-                this.isAllowGithubWebHookPermission() == obj.isAllowGithubWebHookPermission() &&
+                this.isAllowGitlabWebHookPermission() == obj.isAllowGitlabWebHookPermission() &&
                 this.isAllowCcTrayPermission() == obj.isAllowCcTrayPermission() &&
                 this.isAllowAnonymousReadPermission() == obj.isAllowAnonymousReadPermission() &&
                 this.isAllowAnonymousJobStatusPermission() == obj.isAllowAnonymousJobStatusPermission();
@@ -244,11 +225,11 @@ public class GithubAuthorizationStrategy extends AuthorizationStrategy {
             Descriptor<AuthorizationStrategy> {
 
         public String getDisplayName() {
-            return "Github Commiter Authorization Strategy";
+            return "Gitlab Commiter Authorization Strategy";
         }
 
         public String getHelpFile() {
-            return "/plugin/github-oauth/help/help-authorization-strategy.html";
+            return "/plugin/gitlab-oauth/help/help-authorization-strategy.html";
         }
     }
 }

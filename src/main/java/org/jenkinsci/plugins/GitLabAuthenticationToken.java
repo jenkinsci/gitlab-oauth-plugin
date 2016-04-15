@@ -48,8 +48,6 @@ import org.gitlab.api.TokenType;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GHTeam;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -60,10 +58,10 @@ import jenkins.model.Jenkins;
 /**
  * @author mocleiri
  *
- *         to hold the authentication token from the github oauth process.
+ *         to hold the authentication token from the gitlab oauth process.
  *
  */
-public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
+public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 
     /**
      *
@@ -74,7 +72,7 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
     private final String userName;
     private final GitlabAPI gitLabAPI;
     private final GitlabUser me;
-    private GithubSecurityRealm myRealm = null;
+    private GitLabSecurityRealm myRealm = null;
 
     /**
      * Cache for faster organization based security
@@ -93,11 +91,11 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
 
     private final List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-    public GitlabAuthenticationToken(String accessToken, String githubServer) throws IOException {
+    public GitLabAuthenticationToken(String accessToken, String gitlabServer) throws IOException {
         super(new GrantedAuthority[] {});
 
         this.accessToken = accessToken;
-        this.gitLabAPI = GitlabAPI.connect(githubServer, accessToken, TokenType.ACCESS_TOKEN);
+        this.gitLabAPI = GitlabAPI.connect(gitlabServer, accessToken, TokenType.ACCESS_TOKEN);
 
         this.me = gitLabAPI.getUser();
         assert this.me!=null;
@@ -106,20 +104,20 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
 
         this.userName = this.me.getUsername();
         authorities.add(SecurityRealm.AUTHENTICATED_AUTHORITY);
-        if(Jenkins.getInstance().getSecurityRealm() instanceof GithubSecurityRealm) {
+        if(Jenkins.getInstance().getSecurityRealm() instanceof GitLabSecurityRealm) {
             if(myRealm == null) {
-                myRealm = (GithubSecurityRealm) Jenkins.getInstance().getSecurityRealm();
+                myRealm = (GitLabSecurityRealm) Jenkins.getInstance().getSecurityRealm();
             }
             //Search for scopes that allow fetching team membership.  This is documented online.
-            //https://developer.github.com/v3/orgs/#list-your-organizations
-            //https://developer.github.com/v3/orgs/teams/#list-user-teams
+            //https://developer.gitlab.com/v3/orgs/#list-your-organizations
+            //https://developer.gitlab.com/v3/orgs/teams/#list-user-teams
             if(myRealm.hasScope("read:org") || myRealm.hasScope("admin:org") || myRealm.hasScope("user") || myRealm.hasScope("repo")) {
                 List<GitlabGroup> myTeams = gitLabAPI.getGroups();
                 for (GitlabGroup group : myTeams) {
                     LOGGER.log(Level.FINE, "Fetch teams for user " + userName + " in organization " + group.getName());
                     authorities.add(new GrantedAuthorityImpl(group.getName()));
 					authorities.add(new GrantedAuthorityImpl(
-							group + GithubOAuthGroupDetails.ORG_TEAM_SEPARATOR + group.getName()));
+							group + GitLabOAuthGroupDetails.ORG_TEAM_SEPARATOR + group.getName()));
                 }
             }
         }
@@ -155,7 +153,7 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     /**
-     * Returns the login name in GitHub.
+     * Returns the login name in GitLab.
      */
     public String getPrincipal() {
         return this.userName;
@@ -169,7 +167,7 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     /**
-     * For some reason I can't get the github api to tell me for the current
+     * For some reason I can't get the gitlab api to tell me for the current
      * user the groups to which he belongs.
      *
      * So this is a slightly larger consideration. If the authenticated user is
@@ -235,10 +233,10 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
         }
     }
 
-    public Set<String> listToNames(Collection<GHRepository> respositories) throws IOException {
+    public Set<String> listToNames(Collection<GitlabProject> respositories) throws IOException {
         Set<String> names = new HashSet<String>();
-        for (GHRepository repository : respositories) {
-            String ownerName = repository.getOwner().getLogin();
+        for (GitlabProject repository : respositories) {
+            String ownerName = repository.getOwner().getUsername();
             String repoName = repository.getName();
             names.add(ownerName + "/" + repoName);
         }
@@ -271,7 +269,7 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     private static final Logger LOGGER = Logger
-            .getLogger(GitlabAuthenticationToken.class.getName());
+            .getLogger(GitLabAuthenticationToken.class.getName());
 
     public GitlabUser loadUser(String username) {
         try {
@@ -304,13 +302,13 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
             }
         } catch (IOException e) {
             LOGGER.log(Level.WARNING,
-                    "Looks like a bad GitHub URL OR the Jenkins user does not have access to the repository{0}",
+                    "Looks like a bad GitLab URL OR the Jenkins user does not have access to the repository{0}",
                     repositoryName);
         }
         return null;
     }
 
-    public GHTeam loadTeam(String organization, String team) {
+    public GitlabGroup loadTeam(String organization, String team) {
         //try {
             GitlabGroup org = loadOrganization(organization);
             if (org != null) {
@@ -325,7 +323,7 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
     /**
      * @since 0.21
      */
-    public GithubOAuthUserDetails getUserDetails(String username) {
+    public GitLabOAuthUserDetails getUserDetails(String username) {
         GitlabUser user = loadUser(username);
         if (user != null) {
         	// FIXME to implement
@@ -333,11 +331,11 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
 //            try {
 //                GHPersonSet<GHOrganization> orgs;
 //                if(myRealm == null) {
-//                    myRealm = (GithubSecurityRealm) Jenkins.getInstance().getSecurityRealm();
+//                    myRealm = (GitlabSecurityRealm) Jenkins.getInstance().getSecurityRealm();
 //                }
 //                //Search for scopes that allow fetching team membership.  This is documented online.
-//                //https://developer.github.com/v3/orgs/#list-your-organizations
-//                //https://developer.github.com/v3/orgs/teams/#list-user-teams
+//                //https://developer.gitlab.com/v3/orgs/#list-your-organizations
+//                //https://developer.gitlab.com/v3/orgs/teams/#list-user-teams
 //                if(this.userName.equals(username) && (myRealm.hasScope("read:org") || myRealm.hasScope("admin:org") || myRealm.hasScope("user") || myRealm.hasScope("repo"))) {
 //                    //This allows us to search for private organization membership.
 //                    orgs = me.getAllOrganizations();
@@ -356,7 +354,7 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
 //                        Map<String, GHTeam> teams = ghOrganization.getTeams();
 //                        for (String team : teams.keySet()) {
 //                            if (teams.get(team).hasMember(user)) {
-//                                groups.add(new GrantedAuthorityImpl(orgLogin + GithubOAuthGroupDetails.ORG_TEAM_SEPARATOR
+//                                groups.add(new GrantedAuthorityImpl(orgLogin + GitlabOAuthGroupDetails.ORG_TEAM_SEPARATOR
 //                                        + team));
 //                            }
 //                        }
@@ -371,7 +369,7 @@ public class GitlabAuthenticationToken extends AbstractAuthenticationToken {
 //            } catch(IOException e) {
 //                LOGGER.log(Level.FINE, e.getMessage(), e);
 //            }
-            return new GithubOAuthUserDetails(user, null);
+            return new GitLabOAuthUserDetails(user, null);
         }
         return null;
     }

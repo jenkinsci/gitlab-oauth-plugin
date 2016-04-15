@@ -30,16 +30,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Uniquely identifies a repository on GitHub.
+ * Uniquely identifies a repository on GitLab.
  *
  * This is a simplified version of the file
- * https://github.com/jenkinsci/github-plugin/blob/master/src/main/java/com/cloudbees/jenkins/GitHubRepositoryName.java
+ * https://gitlab.com/jenkinsci/gitlab-plugin/blob/master/src/main/java/com/cloudbees/jenkins/GitLabRepositoryName.java
  *
- * It has been duplicated to avoid introducing a dependency on "github-plugin"
+ * It has been duplicated to avoid introducing a dependency on "gitlab-plugin"
  *
  * @author Kohsuke Kawaguchi
  */
-public class GitHubRepositoryName {
+public class GitlabRepositoryName {
 
     private static final Pattern[] URL_PATTERNS = {
         /**
@@ -66,20 +66,20 @@ public class GitHubRepositoryName {
     };
 
     /**
-     * Create {@link GitHubRepositoryName} from URL
+     * Create {@link GitlabRepositoryName} from URL
      *
      * @param url
      *            must be non-null
-     * @return parsed {@link GitHubRepositoryName} or null if it cannot be
+     * @return parsed {@link GitlabRepositoryName} or null if it cannot be
      *         parsed from the specified URL
      */
-    public static GitHubRepositoryName create(final String url) {
+    public static GitlabRepositoryName create(final String url) {
         LOGGER.log(Level.FINE, "Constructing from URL {0}", url);
         for (Pattern p : URL_PATTERNS) {
             Matcher m = p.matcher(url.trim());
             if (m.matches()) {
                 LOGGER.log(Level.FINE, "URL matches {0}", m);
-                GitHubRepositoryName ret = new GitHubRepositoryName(m.group(1), m.group(2),
+                GitlabRepositoryName ret = new GitlabRepositoryName(m.group(1), m.group(2),
                         m.group(3));
                 LOGGER.log(Level.FINE, "Object is {0}", ret);
                 return ret;
@@ -91,7 +91,7 @@ public class GitHubRepositoryName {
 
     public final String host, userName, repositoryName;
 
-    public GitHubRepositoryName(String host, String userName, String repositoryName) {
+    public GitlabRepositoryName(String host, String userName, String repositoryName) {
         this.host           = host;
         this.userName       = userName;
         this.repositoryName = repositoryName;
@@ -99,9 +99,9 @@ public class GitHubRepositoryName {
 
     @Override
     public String toString() {
-        return "GitHubRepository[host="+host+",username="+userName+",repository="+repositoryName+"]";
+        return "GitLabRepository[host="+host+",username="+userName+",repository="+repositoryName+"]";
     }
 
-    private static final Logger LOGGER = Logger.getLogger(GitHubRepositoryName.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GitlabRepositoryName.class.getName());
 
 }
