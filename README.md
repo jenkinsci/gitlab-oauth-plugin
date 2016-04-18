@@ -1,22 +1,22 @@
-# Jenkins Github OAuth Plugin
+# Jenkins GitLab OAuth Plugin
 
 * License: [MIT Licensed](LICENSE.txt)
-* Read more: [GitHub OAuth Plugin wiki page][wiki]
+* Read more: [GitLab OAuth Plugin wiki page][wiki]
 * Latest build: [![Build Status][build-image]][build-link]
 * [Contributions are welcome](CONTRIBUTING.md).
 
 # Overview
 
-The GitHub OAuth plugin provides a means of securing a Jenkins instance by
-offloading authentication and authorization to GitHub.  The plugin authenticates
-by using a [GitHub OAuth Application][github-wiki-oauth].  It can use multiple
-authorization strategies for authorizing users.  GitHub users are surfaced as
-Jenkins users for authorization.  GitHub organizations and teams are surfaced as
-Jenkins groups for authorization.  This plugin supports GitHub Enterprise.
+The GitLab OAuth plugin provides a means of securing a Jenkins instance by
+offloading authentication and authorization to GitLab.  The plugin authenticates
+by using a [GitLab OAuth Application][gitlab-wiki-oauth].  It can use multiple
+authorization strategies for authorizing users.  GitLab users are surfaced as
+Jenkins users for authorization.  GitLab organizations and teams are surfaced as
+Jenkins groups for authorization.
 
 More comprehensive documentation is listed on the [wiki page][wiki].
 
-[build-image]: https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/github-oauth-plugin
-[build-link]: https://jenkins.ci.cloudbees.com/job/plugins/job/github-oauth-plugin/
-[github-wiki-oauth]: https://developer.github.com/v3/oauth/
-[wiki]: https://wiki.jenkins-ci.org/display/JENKINS/Github+OAuth+Plugin
+[build-image]: https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/gitlab-oauth-plugin
+[build-link]: https://jenkins.ci.cloudbees.com/job/plugins/job/gitlab-oauth-plugin/
+[gitlab-wiki-oauth]: http://doc.gitlab.com/ce/api/oauth2.html
+[wiki]: https://wiki.jenkins-ci.org/display/JENKINS/Gitlab+OAuth+Plugin
