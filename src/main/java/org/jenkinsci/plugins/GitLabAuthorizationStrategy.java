@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import hudson.Extension;
@@ -204,6 +205,11 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+    	return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
     @Extension
