@@ -70,9 +70,9 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	private final String accessToken;
 
 	private final String userName;
-	private final GitlabAPI gitLabAPI;
-	private final GitlabUser me;
-	private GitLabSecurityRealm myRealm = null;
+	private transient final GitlabAPI gitLabAPI;
+	private transient final GitlabUser me;
+	private transient GitLabSecurityRealm myRealm = null;
 
 	/**
 	 * Cache for faster organization based security
@@ -255,7 +255,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 						// could be non-existant)
 						return Boolean.FALSE;
 					} else {
-						return new Boolean(repository.isPublic());
+						return Boolean.valueOf(repository.isPublic());
 					}
 				}
 			});
