@@ -184,8 +184,9 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
 
     private boolean currentUriPathEquals( String specificPath ) {
         String requestUri = requestURI();
-        if (requestUri != null) {
-            String basePath = URI.create(Jenkins.getInstance().getRootUrl()).getPath();
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null && requestUri != null) {
+			String basePath = URI.create(jenkins.getRootUrl()).getPath();
             return URI.create(requestUri).getPath().equals(basePath + specificPath);
         } else {
             return false;

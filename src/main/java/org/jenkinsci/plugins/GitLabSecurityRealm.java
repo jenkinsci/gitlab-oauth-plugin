@@ -335,13 +335,14 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 			SecurityContextHolder.getContext().setAuthentication(auth);
 
 			GitlabUser self = auth.getMyself();
-			User u = User.current();
-			u.setFullName(self.getName());
-			// Set email from gitlab only if empty
-			if (!u.getProperty(Mailer.UserProperty.class).hasExplicitlyConfiguredAddress()) {
-				u.addProperty(new Mailer.UserProperty(auth.getMyself().getEmail()));
+			User user = User.current();
+			if (user != null) {
+				user.setFullName(self.getName());
+				// Set email from gitlab only if empty
+				if (!user.getProperty(Mailer.UserProperty.class).hasExplicitlyConfiguredAddress()) {
+					user.addProperty(new Mailer.UserProperty(auth.getMyself().getEmail()));
+				}
 			}
-
 			fireAuthenticated(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
 		} else {
 			Log.info("Gitlab did not return an access token.");
@@ -380,7 +381,11 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 	 * Returns the proxy to be used when connecting to the given URI.
 	 */
 	private HttpHost getProxy(HttpUriRequest method) throws URIException {
-		ProxyConfiguration proxy = Jenkins.getInstance().proxy;
+		Jenkins jenkins = Jenkins.getInstance();
+		if (jenkins == null) {
+			return null; // defensive check
+		}
+		ProxyConfiguration proxy = jenkins.proxy;
 		if (proxy == null)
 			return null; // defensive check
 
