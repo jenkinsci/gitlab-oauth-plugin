@@ -1,8 +1,8 @@
 package org.jenkinsci.plugins;
 
-import hudson.ExtensionPoint;
-
 import java.util.Collection;
+
+import hudson.ExtensionPoint;
 
 /**
  * Extension point to be implemented by plugins to request additional scopes.

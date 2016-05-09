@@ -182,10 +182,12 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
 	public static final class ConverterImpl implements Converter {
 
+		@Override
 		public boolean canConvert(Class type) {
 			return type == GitLabSecurityRealm.class;
 		}
 
+		@Override
 		public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
 			GitLabSecurityRealm realm = (GitLabSecurityRealm) source;
 
@@ -206,6 +208,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 			writer.endNode();
 		}
 
+		@Override
 		public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 
 			GitLabSecurityRealm realm = new GitLabSecurityRealm();
@@ -387,7 +390,9 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		}
 		ProxyConfiguration proxy = jenkins.proxy;
 		if (proxy == null)
+		 {
 			return null; // defensive check
+		}
 
 		Proxy p = proxy.createProxy(method.getURI().getHost());
 		switch (p.type()) {
@@ -433,10 +438,12 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 	public SecurityComponents createSecurityComponents() {
 		return new SecurityComponents(new AuthenticationManager() {
 
+			@Override
 			public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-				if (authentication instanceof GitLabAuthenticationToken)
+				if (authentication instanceof GitLabAuthenticationToken) {
 					return authentication;
-				if (authentication instanceof UsernamePasswordAuthenticationToken)
+				}
+				if (authentication instanceof UsernamePasswordAuthenticationToken) {
 					try {
 						UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 						GitLabAuthenticationToken gitlab = new GitLabAuthenticationToken(token.getCredentials().toString(), getGitlabApiUri());
@@ -445,9 +452,11 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
+				}
 				throw new BadCredentialsException("Unexpected authentication type: " + authentication);
 			}
 		}, new UserDetailsService() {
+			@Override
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
 				return GitLabSecurityRealm.this.loadUserByUsername(username);
 			}
@@ -508,8 +517,9 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
 		try {
 			GitLabOAuthUserDetails userDetails = authToken.getUserDetails(username);
-			if (userDetails == null)
+			if (userDetails == null) {
 				throw new UsernameNotFoundException("Unknown user: " + username);
+			}
 
 			// Check the username is not an homonym of an organization
 			GitlabGroup ghOrg = authToken.loadOrganization(username);
@@ -558,8 +568,9 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
 		GitLabAuthenticationToken authToken = (GitLabAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
-		if (authToken == null)
+		if (authToken == null) {
 			throw new UsernameNotFoundException("No known group: " + groupName);
+		}
 
 		GitlabGroup gitlabGroup = authToken.loadOrganization(groupName);
 		return new GitLabOAuthGroupDetails(gitlabGroup);

@@ -149,6 +149,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		return authorities.toArray(new GrantedAuthority[authorities.size()]);
 	}
 
+	@Override
 	public Object getCredentials() {
 		return ""; // do not expose the credential
 	}
@@ -156,6 +157,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	/**
 	 * Returns the login name in GitLab.
 	 */
+	@Override
 	public String getPrincipal() {
 		return this.userName;
 	}
@@ -286,8 +288,10 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	public GitlabGroup loadOrganization(String organization) {
 		try {
 			if (gitLabAPI != null && isAuthenticated())
+			 {
 				return gitLabAPI.getGroups().get(0); // FIXME return the right
 														// group;
+			}
 		} catch (IOException e) {
 			LOGGER.log(Level.FINEST, e.getMessage(), e);
 		}

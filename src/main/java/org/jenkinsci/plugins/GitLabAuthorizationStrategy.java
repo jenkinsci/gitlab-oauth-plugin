@@ -87,7 +87,8 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
         return rootACL;
     }
 
-    public ACL getACL(Job<?,?> job) {
+    @Override
+	public ACL getACL(Job<?,?> job) {
         if(job instanceof AbstractProject) {
             AbstractProject project = (AbstractProject)job;
             GitLabRequireOrganizationMembershipACL gitlabACL = (GitLabRequireOrganizationMembershipACL) getRootACL();
@@ -216,11 +217,13 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     public static final class DescriptorImpl extends
             Descriptor<AuthorizationStrategy> {
 
-        public String getDisplayName() {
+        @Override
+		public String getDisplayName() {
             return "Gitlab Commiter Authorization Strategy";
         }
 
-        public String getHelpFile() {
+        @Override
+		public String getHelpFile() {
             return "/plugin/gitlab-oauth/help/help-authorization-strategy.html";
         }
     }

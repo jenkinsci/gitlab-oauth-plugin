@@ -26,6 +26,15 @@ THE SOFTWARE.
  */
 package org.jenkinsci.plugins;
 
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.acegisecurity.Authentication;
+import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.StaplerRequest;
+
 import hudson.model.AbstractProject;
 import hudson.model.Item;
 import hudson.plugins.git.GitSCM;
@@ -33,16 +42,7 @@ import hudson.plugins.git.UserRemoteConfig;
 import hudson.scm.SCM;
 import hudson.security.ACL;
 import hudson.security.Permission;
-
-import java.net.URI;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-
 import jenkins.model.Jenkins;
-import org.acegisecurity.Authentication;
-import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * @author Mike
@@ -73,8 +73,9 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     @Override
     public boolean hasPermission(Authentication a, Permission permission) {
         if (a != null && a instanceof GitLabAuthenticationToken) {
-            if (!a.isAuthenticated())
-                return false;
+            if (!a.isAuthenticated()) {
+				return false;
+			}
 
             GitLabAuthenticationToken authenticationToken = (GitLabAuthenticationToken) a;
 
