@@ -20,6 +20,7 @@
 	    <!-- Jenkins Test Harness version you use to test the plugin. -->
 	    <!-- For Jenkins version >= 1.580.1 use JTH 2.x or higher. -->
 	    <jenkins-test-harness.version>2.1</jenkins-test-harness.version>
+        <hpi-plugin.version>1.113</hpi-plugin.version>
 	    <!-- Other properties you may want to use:
 	         ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin..
 	         ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
