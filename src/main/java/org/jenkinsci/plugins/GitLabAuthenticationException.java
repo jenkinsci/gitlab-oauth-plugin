@@ -1,7 +1,7 @@
 /**
 The MIT License
 
-Copyright (c) 2011 Michael O'Cleirigh
+Copyright (c) 2016 Mohamed EL HABIB
 
  Copied from mysql-auth-plugin on July 18, 2011
 
