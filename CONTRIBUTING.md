@@ -1,6 +1,6 @@
 # How to contribute
 
-All contributions to the GitHub OAuth Plugin are welcome.  This project runs
+All contributions to the GitLab OAuth Plugin are welcome.  This project runs
 completely off of pull requests and code review.  There are a couple ways of
 contributing.  This document serves as helpful guidelines to contributing and
 isn't necessarily the full scope of available ways to contribute.
@@ -47,6 +47,6 @@ validating or debunking potential bug reports.
 * [All issues][issue-all]
 * [Open issues][issue-open]
 
-[issue-all]: https://issues.jenkins-ci.org/browse/JENKINS-29373?jql=project%20%3D%20JENKINS%20AND%20component%20%3D%20github-oauth-plugin
-[issue-open]: https://issues.jenkins-ci.org/browse/JENKINS-29373?jql=project%20%3D%20JENKINS%20AND%20status%20in%20%28Open%2C%20%22In%20Progress%22%2C%20Reopened%29%20AND%20component%20%3D%20github-oauth-plugin
-[pr-open]: https://github.com/jenkinsci/github-oauth-plugin/pulls
+[issue-all]: https://issues.jenkins-ci.org/issues/?jql=project%20%3D%20JENKINS%20AND%20component%20%3D%20gitlab-oauth-plugin
+[issue-open]: https://issues.jenkins-ci.org/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened)%20AND%20component%20%3D%20gitlab-oauth-plugin
+[pr-open]: https://github.com/jenkinsci/gitlab-oauth-plugin/pulls
