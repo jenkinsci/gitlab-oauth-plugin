@@ -311,18 +311,6 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		return null;
 	}
 
-	public GitlabGroup loadTeam(String organization, String team) {
-		// try {
-		GitlabGroup org = loadOrganization(organization);
-		if (org != null) {
-			// FIXME return org.getName();
-		}
-		// } catch (IOException e) {
-		// LOGGER.log(Level.FINEST, e.getMessage(), e);
-		// }
-		return null;
-	}
-
 	/**
 	 * @since 0.21
 	 */
