@@ -97,7 +97,6 @@
 						<version>1.9.4</version>
 					</dependency>
 				</dependencies>
-			</dependencies>
 			</plugin>
 		</plugins>
 	</build>
