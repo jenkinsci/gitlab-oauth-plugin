@@ -109,7 +109,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 	private String gitlabApiUri;
 	private String clientID;
 	private String clientSecret;
-	private String oauthScopes;
 
 	/**
 	 * @param gitlabWebUri
@@ -122,18 +121,15 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 	 *            The client ID for the created OAuth Application.
 	 * @param clientSecret
 	 *            The client secret for the created GitLab OAuth Application.
-	 * @param oauthScopes
-	 *            A comma separated list of OAuth Scopes to request access to.
 	 */
 	@DataBoundConstructor
-	public GitLabSecurityRealm(String gitlabWebUri, String gitlabApiUri, String clientID, String clientSecret, String oauthScopes) {
+	public GitLabSecurityRealm(String gitlabWebUri, String gitlabApiUri, String clientID, String clientSecret) {
 		super();
 
 		this.gitlabWebUri = Util.fixEmptyAndTrim(gitlabWebUri);
 		this.gitlabApiUri = Util.fixEmptyAndTrim(gitlabApiUri);
 		this.clientID = Util.fixEmptyAndTrim(clientID);
 		this.clientSecret = Util.fixEmptyAndTrim(clientSecret);
-		this.oauthScopes = Util.fixEmptyAndTrim(oauthScopes);
 	}
 
 	private GitLabSecurityRealm() {
@@ -263,13 +259,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 	 */
 	public String getClientSecret() {
 		return clientSecret;
-	}
-
-	/**
-	 * @return the oauthScopes
-	 */
-	public String getOauthScopes() {
-		return oauthScopes;
 	}
 
 	public HttpResponse doCommenceLogin(StaplerRequest request, @Header("Referer") final String referer) throws IOException {
@@ -545,7 +534,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		if (object instanceof GitLabSecurityRealm) {
 			GitLabSecurityRealm obj = (GitLabSecurityRealm) object;
 			return this.getGitlabWebUri().equals(obj.getGitlabWebUri()) && this.getGitlabApiUri().equals(obj.getGitlabApiUri()) && this.getClientID().equals(obj.getClientID())
-					&& this.getClientSecret().equals(obj.getClientSecret()) && this.getOauthScopes().equals(obj.getOauthScopes());
+					&& this.getClientSecret().equals(obj.getClientSecret());
 		} else {
 			return false;
 		}
