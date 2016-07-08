@@ -156,7 +156,8 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                         return true;
                     }
                     if (allowGitlabWebHookPermission &&
-                            (currentUriPathEquals("gitlab-webhook") ||
+                            (currentUriPathStartsWith("/project/") ||
+                             currentUriPathEquals("gitlab-webhook") ||
                              currentUriPathEquals("gitlab-webhook/"))) {
                         log.finest("Granting READ access for gitlab-webhook url: " + requestURI());
                         return true;
@@ -181,6 +182,11 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             //
             return false;
         }
+    }
+    
+    private boolean currentUriPathStartsWith( String specificPath){
+        String requestUri = requestURI();
+        return requestUri==null?false:requestUri.startsWith(specificPath);
     }
 
     private boolean currentUriPathEquals( String specificPath ) {
