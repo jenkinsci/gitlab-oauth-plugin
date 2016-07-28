@@ -33,6 +33,7 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,14 +54,14 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabUser;
@@ -272,7 +273,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		parameters.add(new BasicNameValuePair("response_type", "code"));
 		parameters.add(new BasicNameValuePair("client_id", clientID));
 
-		return new HttpRedirect(gitlabWebUri + "/oauth/authorize?" + URLEncodedUtils.format(parameters, HTTP.UTF_8));
+		return new HttpRedirect(gitlabWebUri + "/oauth/authorize?" + URLEncodedUtils.format(parameters, StandardCharsets.UTF_8));
 	}
 
 	private String buildRedirectUrl(StaplerRequest request) throws MalformedURLException {
@@ -300,12 +301,15 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		parameters.add(new BasicNameValuePair("code", code));
 		parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
 		parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request)));
-		httpPost.setEntity(new UrlEncodedFormEntity(parameters, HTTP.UTF_8));
+		httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
 
-		DefaultHttpClient httpclient = new DefaultHttpClient();
+		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpHost proxy = getProxy(httpPost);
 		if (proxy != null) {
-			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+		    RequestConfig config = RequestConfig.custom()
+                    .setProxy(proxy)
+                    .build();
+		    httpPost.setConfig(config);
 		}
 
 		org.apache.http.HttpResponse response = httpclient.execute(httpPost);
@@ -317,7 +321,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		// When HttpClient instance is no longer needed,
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
-		httpclient.getConnectionManager().shutdown();
+		httpclient.close();
 
 		String accessToken = extractToken(content);
 
