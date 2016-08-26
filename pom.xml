@@ -9,7 +9,7 @@
 	</parent>
 	<!--<groupId>org.jenkins-ci.plugins</groupId> -->
 	<artifactId>gitlab-oauth</artifactId>
-	<version>1.0.6</version>
+	<version>1.0.7</version>
 	<packaging>hpi</packaging>
 	<properties>
 		<!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>org.gitlab</groupId>
 			<artifactId>java-gitlab-api</artifactId>
-			<version>1.2.5</version>
+			<version>1.2.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jenkins-ci.plugins</groupId>
