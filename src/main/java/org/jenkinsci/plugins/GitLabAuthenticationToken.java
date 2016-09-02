@@ -89,6 +89,9 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	private static final Cache<String, Boolean> publicRepositoryCache = CacheBuilder.newBuilder()
 			.expireAfterWrite(1, TimeUnit.HOURS).build();
 
+	private static final Cache<String, List<GitlabProject>> groupRepositoriesCache = CacheBuilder.newBuilder()
+			.expireAfterWrite(1, TimeUnit.HOURS).build();
+
 	private final List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
 	public GitLabAuthenticationToken(String accessToken, String gitlabServer) throws IOException {
@@ -130,6 +133,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		userOrganizationCache.invalidateAll();
 		repositoryCollaboratorsCache.invalidateAll();
 		repositoriesByUserCache.invalidateAll();
+		groupRepositoriesCache.invalidateAll();
 	}
 
 	/**
@@ -211,21 +215,26 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 			Set<String> myRepositories = repositoriesByUserCache.get(getName(), new Callable<Set<String>>() {
 				@Override
 				public Set<String> call() throws Exception {
-					return Collections.emptySet();
-					// List<GHRepository> userRepositoryList =
-					// me.listRepositories().asList();
-					// Set<String> repositoryNames =
-					// listToNames(userRepositoryList);
-					// GHPersonSet<GHOrganization> organizations =
-					// me.getAllOrganizations();
-					// for (GHOrganization organization : organizations) {
-					// List<GHRepository> orgRepositoryList =
-					// organization.listRepositories().asList();
-					// Set<String> orgRepositoryNames =
-					// listToNames(orgRepositoryList);
-					// repositoryNames.addAll(orgRepositoryNames);
-					// }
-					// return repositoryNames;
+					// Get user's projects
+					List<GitlabProject> userRepositoryList = gitLabAPI.getProjects();
+					Set<String> repositoryNames = Collections.emptySet();
+					if (userRepositoryList != null) {
+						repositoryNames = listToNames(userRepositoryList);
+					}
+					// Disable for security reason.
+					// If enabled, even group guest can manage all group jobs.
+//					// Get user's groups
+//					List<GitlabGroup> userGroups = gitLabAPI.getGroups();
+//					if (userGroups != null) {
+//						for (GitlabGroup group : userGroups) {
+//							List<GitlabProject> groupProjects = getGroupProjects(group);
+//							if (groupProjects != null) {
+//								Set<String> groupProjectNames = listToNames(groupProjects);
+//								repositoryNames.addAll(groupProjectNames);
+//							}
+//						}
+//					}
+					return repositoryNames;
 				}
 			});
 
@@ -236,12 +245,14 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		}
 	}
 
-	public Set<String> listToNames(Collection<GitlabProject> respositories) throws IOException {
+	public Set<String> listToNames(Collection<GitlabProject> repositories) throws IOException {
 		Set<String> names = new HashSet<String>();
-		for (GitlabProject repository : respositories) {
-			String ownerName = repository.getOwner().getUsername();
-			String repoName = repository.getName();
-			names.add(ownerName + "/" + repoName);
+		for (GitlabProject repository : repositories) {
+			// String ownerName = repository.getOwner().getUsername();
+			// String repoName = repository.getName();
+			// names.add(ownerName + "/" + repoName);
+            // Do not use owner! Project belongs to group does not have owner!
+			names.add(repository.getPathWithNamespace());
 		}
 		return names;
 	}
@@ -320,8 +331,8 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 			// FIXME to implement
 			List<GrantedAuthority> groups = new ArrayList<GrantedAuthority>();
 			try {
-				List<GitlabGroup> gitlabGroups = gitLabAPI.getGroups();
-				for (GitlabGroup gitlabGroup : gitlabGroups) {
+				List<GitlabGroup> gitLabGroups = gitLabAPI.getGroups();
+				for (GitlabGroup gitlabGroup : gitLabGroups) {
 					groups.add(new GrantedAuthorityImpl(gitlabGroup.getName()));
 				}
 			} catch (IOException e) {
@@ -330,5 +341,21 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 			return new GitLabOAuthUserDetails(user, groups.toArray(new GrantedAuthority[groups.size()]));
 		}
 		return null;
+	}
+
+	public List<GitlabProject> getGroupProjects(final GitlabGroup group) {
+		try {
+			List<GitlabProject> groupProjects = groupRepositoriesCache.get(group.getPath(), new Callable<List<GitlabProject>>() {
+				@Override
+				public List<GitlabProject> call() throws Exception {
+					return gitLabAPI.getGroupProjects(group);
+				}
+			});
+
+			return groupProjects;
+		} catch (ExecutionException e) {
+			LOGGER.log(Level.SEVERE, "an exception was thrown", e);
+			throw new RuntimeException("authorization failed for user = " + getName(), e);
+		}
 	}
 }
