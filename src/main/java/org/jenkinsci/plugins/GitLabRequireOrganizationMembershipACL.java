@@ -134,7 +134,6 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                     }
                 }
             }
-
             // no match.
             return false;
         } else {
@@ -145,12 +144,10 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                 log.finest("Granting Full rights to SYSTEM user.");
                 return true;
             }
-
             if (authenticatedUserName.equals("anonymous")) {
                 if(checkJobStatusPermission(permission) && allowAnonymousJobStatusPermission) {
                     return true;
                 }
-
                 if (checkReadPermission(permission)) {
                     if (allowAnonymousReadPermission) {
                         return true;
@@ -167,6 +164,16 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                         return true;
                     }
                     log.finer("Denying anonymous READ permission to url: " + requestURI());
+                }
+
+                if (testBuildPermission(permission)) {
+                    if (allowGitlabWebHookPermission &&
+                            (currentUriPathStartsWith("/project/") ||
+                             currentUriPathEquals("gitlab-webhook") ||
+                             currentUriPathEquals("gitlab-webhook/"))) {
+                        log.finest("Granting BUILD access for gitlab-webhook url: " + requestURI());
+                        return true;
+                    }
                 }
                 return false;
             }
