@@ -298,10 +298,8 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 
 	public GitlabGroup loadOrganization(String organization) {
 		try {
-			if (gitLabAPI != null && isAuthenticated())
-			 {
-				return gitLabAPI.getGroups().get(0); // FIXME return the right
-														// group;
+			if (gitLabAPI != null && isAuthenticated() && !gitLabAPI.getGroups().isEmpty()) {
+				return gitLabAPI.getGroups().get(0); // FIXME return the right group;
 			}
 		} catch (IOException e) {
 			LOGGER.log(Level.FINEST, e.getMessage(), e);
