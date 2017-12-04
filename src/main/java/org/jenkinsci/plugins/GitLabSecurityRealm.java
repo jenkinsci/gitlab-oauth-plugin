@@ -339,7 +339,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 					user.addProperty(new Mailer.UserProperty(auth.getMyself().getEmail()));
 				}
 			}
-			fireAuthenticated(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
+			SecurityListener.fireAuthenticated(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
 		} else {
 			Log.info("Gitlab did not return an access token.");
 		}
@@ -351,26 +351,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		return HttpResponses.redirectToContextRoot(); // referer should be
 														// always there, but be
 														// defensive
-	}
-
-	/**
-	 * Calls {@code SecurityListener.fireAuthenticated()} but through reflection
-	 * to avoid hard dependency on non-LTS core version. TODO delete in 1.569+
-	 */
-	private void fireAuthenticated(UserDetails details) {
-		try {
-			Class<?> c = Class.forName("jenkins.security.SecurityListener");
-			Method m = c.getMethod("fireAuthenticated", UserDetails.class);
-			m.invoke(null, details);
-		} catch (ClassNotFoundException e) {
-			// running with old core
-		} catch (NoSuchMethodException e) {
-			// running with old core
-		} catch (IllegalAccessException e) {
-			throw (Error) new IllegalAccessError(e.getMessage()).initCause(e);
-		} catch (InvocationTargetException e) {
-			LOGGER.log(Level.WARNING, "Failed to invoke fireAuthenticated", e);
-		}
 	}
 
 	/**
