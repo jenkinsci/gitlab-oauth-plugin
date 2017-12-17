@@ -356,12 +356,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 	 */
 	private HttpHost getProxy(HttpUriRequest method) throws URIException {
 		Jenkins jenkins = Jenkins.getInstance();
-		if (jenkins == null) {
-			return null; // defensive check
-		}
 		ProxyConfiguration proxy = jenkins.proxy;
-		if (proxy == null)
-		 {
+		if (proxy == null) {
 			return null; // defensive check
 		}
 
