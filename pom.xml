@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.jenkins-ci.plugins</groupId>
-		<artifactId>plugin</artifactId>
-		<version>2.9</version>
-		<relativePath />
-	</parent>
-	<!--<groupId>org.jenkins-ci.plugins</groupId> -->
-	<artifactId>gitlab-oauth</artifactId>
-	<version>1.0.10-SNAPSHOT</version>
-	<packaging>hpi</packaging>
-	<properties>
-		<!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-		<jenkins.version>1.625.3</jenkins.version>
-		<!-- Java Level to use. Java 7 required when using core >= 1.612 -->
-		<java.level>7</java.level>
-		<!-- Jenkins Test Harness version you use to test the plugin. -->
-		<!-- For Jenkins version >= 1.580.1 use JTH 2.x or higher. -->
-		<jenkins-test-harness.version>2.1</jenkins-test-harness.version>
-		<hpi-plugin.version>1.113</hpi-plugin.version>
-		<!-- Other properties you may want to use: ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin.. ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin. -->
-	</properties>
-	<name>Gitlab Authentication plugin</name>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>3.2</version>
+        <relativePath />
+    </parent>
+    <artifactId>gitlab-oauth</artifactId>
+    <version>1.1-SNAPSHOT</version>
+    <packaging>hpi</packaging>
+    <properties>
+        <jenkins.version>2.89.2</jenkins.version>
+        <java.level>8</java.level>
+	<!--        
+	<jersey.version>2.26</jersey.version>
+        <jackson.version>2.9.1</jackson.version>
+        -->
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+    <name>Gitlab Authentication plugin</name>
 	<description>A Jenkins authentication plugin that delegates to gitlab.  We also implement an Authorization Strategy that users the acquired OAuth token to interact with the Gitlab API to determine a users level of access to Jenkins.</description>
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/Gitlab+OAuth+Plugin</url>
-	<!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
-	<licenses>
-		<license>
-			<name>MIT License</name>
-			<url>http://opensource.org/licenses/MIT</url>
-		</license>
-	</licenses>
-	<developers>
-		<developer>
+    <!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+      <developer>
 			<id>mohamed-el-habib</id>
 			<name>Mohamed EL HABIB</name>
 			<email>mohamed.el-habib@digitaslbi.fr</email>
@@ -42,62 +41,48 @@
 				<role>maintainer</role>
 			</roles>
 			<timezone>Europe/Paris</timezone>
-		</developer>
-	</developers>
-	<scm>
-		<connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
-		<developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-		<url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
-		<tag>HEAD</tag>
-	</scm>
-	<!-- Use repositories suggested in plugin tutorial: https://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial -->
-	<repositories>
-		<repository>
-			<id>repo.jenkins-ci.org</id>
-			<url>http://repo.jenkins-ci.org/public/</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>repo.jenkins-ci.org</id>
-			<url>http://repo.jenkins-ci.org/public/</url>
-		</pluginRepository>
-	</pluginRepositories>
-	<dependencies>
-		<dependency>
-			<groupId>org.jenkins-ci.plugins</groupId>
-			<artifactId>mailer</artifactId>
-			<version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.gitlab</groupId>
-			<artifactId>java-gitlab-api</artifactId>
-			<version>1.2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jenkins-ci.plugins</groupId>
-			<artifactId>git</artifactId>
-			<version>2.4.4</version>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.scm</groupId>
-						<artifactId>maven-scm-provider-gitexe</artifactId>
-						<version>1.9.4</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-		</plugins>
-	</build>
+      </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+    </scm>
+
+
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>mailer</artifactId>
+            <version>1.20</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gitlab</groupId>
+            <artifactId>java-gitlab-api</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+	<dependency>
+            <groupId>org.jenkins-ci</groupId>
+            <artifactId>annotation-indexer</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>git</artifactId>
+            <version>3.6.4</version>
+        </dependency>
+    </dependencies>
 </project>
