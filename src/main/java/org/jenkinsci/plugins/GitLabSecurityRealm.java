@@ -223,16 +223,21 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		}
 
 		private void setValue(GitLabSecurityRealm realm, String node, String value) {
-			if (node.toLowerCase().equals("clientid")) {
-				realm.setClientID(value);
-			} else if (node.toLowerCase().equals("clientsecret")) {
-				realm.setClientSecret(value);
-			} else if (node.toLowerCase().equals("gitlabweburi")) {
-				realm.setGitlabWebUri(value);
-			} else if (node.toLowerCase().equals("gitlabapiuri")) {
-				realm.setGitlabApiUri(value);
-			} else {
-				throw new ConversionException("Invalid node value = " + node);
+			switch (node.toLowerCase()) {
+                case "clientid":
+                    realm.setClientID(value);
+                    break;
+                case "clientsecret":
+                    realm.setClientSecret(value);
+                    break;
+                case "gitlabweburi":
+                    realm.setGitlabWebUri(value);
+                    break;
+                case "gitlabapiuri":
+                    realm.setGitlabApiUri(value);
+                    break;
+                default:
+				    throw new ConversionException("Invalid node value = " + node);
 			}
 		}
 
@@ -383,8 +388,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 			if (node != null) {
 				return node.asText();
 			}
-		} catch (JsonProcessingException e) {
-			Log.error(e.getMessage(), e);
 		} catch (IOException e) {
 			Log.error(e.getMessage(), e);
 		}
