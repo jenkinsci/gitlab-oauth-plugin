@@ -92,13 +92,13 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	private static final Cache<String, List<GitlabProject>> groupRepositoriesCache = CacheBuilder.newBuilder()
 			.expireAfterWrite(1, TimeUnit.HOURS).build();
 
-	private final List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+	private final List<GrantedAuthority> authorities = new ArrayList<>();
 
-	public GitLabAuthenticationToken(String accessToken, String gitlabServer) throws IOException {
+	public GitLabAuthenticationToken(String accessToken, String gitlabServer, TokenType tokenType) throws IOException {
 		super(new GrantedAuthority[] {});
 
 		this.accessToken = accessToken;
-		this.gitLabAPI = GitlabAPI.connect(gitlabServer, accessToken, TokenType.ACCESS_TOKEN);
+		this.gitLabAPI = GitlabAPI.connect(gitlabServer, accessToken, tokenType);
 
 		this.me = gitLabAPI.getUser();
 		assert this.me != null;
