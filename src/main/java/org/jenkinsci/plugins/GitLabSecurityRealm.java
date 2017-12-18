@@ -223,16 +223,21 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		}
 
 		private void setValue(GitLabSecurityRealm realm, String node, String value) {
-			if (node.toLowerCase().equals("clientid")) {
-				realm.setClientID(value);
-			} else if (node.toLowerCase().equals("clientsecret")) {
-				realm.setClientSecret(value);
-			} else if (node.toLowerCase().equals("gitlabweburi")) {
-				realm.setGitlabWebUri(value);
-			} else if (node.toLowerCase().equals("gitlabapiuri")) {
-				realm.setGitlabApiUri(value);
-			} else {
-				throw new ConversionException("Invalid node value = " + node);
+			switch (node.toLowerCase()) {
+                case "clientid":
+                    realm.setClientID(value);
+                    break;
+                case "clientsecret":
+                    realm.setClientSecret(value);
+                    break;
+                case "gitlabweburi":
+                    realm.setGitlabWebUri(value);
+                    break;
+                case "gitlabapiuri":
+                    realm.setGitlabApiUri(value);
+                    break;
+                default:
+				    throw new ConversionException("Invalid node value = " + node);
 			}
 		}
 
@@ -383,8 +388,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 			if (node != null) {
 				return node.asText();
 			}
-		} catch (JsonProcessingException e) {
-			Log.error(e.getMessage(), e);
 		} catch (IOException e) {
 			Log.error(e.getMessage(), e);
 		}
@@ -433,6 +436,18 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 	@Override
 	public String getLoginUrl() {
 		return "securityRealm/commenceLogin";
+	}
+
+	@Override
+	protected String getPostLogOutUrl(StaplerRequest req, Authentication auth) {
+		// if we just redirect to the root and anonymous does not have Overall read then we will start a login all over again.
+		// we are actually anonymous here as the security context has been cleared
+		Jenkins jenkins = Jenkins.getInstance();
+		assert jenkins != null;
+		if (jenkins.hasPermission(Jenkins.READ)) {
+			return super.getPostLogOutUrl(req, auth);
+		}
+		return req.getContextPath()+ "/" + GitLabLogoutAction.POST_LOGOUT_URL;
 	}
 
 	@Extension
