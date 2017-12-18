@@ -435,6 +435,18 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 		return "securityRealm/commenceLogin";
 	}
 
+	@Override
+	protected String getPostLogOutUrl(StaplerRequest req, Authentication auth) {
+		// if we just redirect to the root and anonymous does not have Overall read then we will start a login all over again.
+		// we are actually anonymous here as the security context has been cleared
+		Jenkins jenkins = Jenkins.getInstance();
+		assert jenkins != null;
+		if (jenkins.hasPermission(Jenkins.READ)) {
+			return super.getPostLogOutUrl(req, auth);
+		}
+		return req.getContextPath()+ "/" + GitLabLogoutAction.POST_LOGOUT_URL;
+	}
+
 	@Extension
 	public static final class DescriptorImpl extends Descriptor<SecurityRealm> {
 
