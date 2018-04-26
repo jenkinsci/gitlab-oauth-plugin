@@ -255,7 +255,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                 authenticationToken.isPublicRepository(repositoryName)) {
             return true;
         } else {
-            return authenticationToken.hasRepositoryPermission(repositoryName);
+            return (permission.equals(Item.READ) || permission.equals(Item.BUILD)) && authenticationToken.hasRepositoryPermission(repositoryName);
         }
     }
 
