@@ -47,11 +47,13 @@ public class GitlabRepositoryName {
          * from URLs that include a '.git' suffix, removing the suffix from the
          * repository name.
          */
+        Pattern.compile("(.+):([^/]+)/([^/]+)\\.git"),
         Pattern.compile("git@(.+):([^/]+)/([^/]+)\\.git"),
         Pattern.compile("https?://[^/]+@([^/]+)/([^/]+)/([^/]+)\\.git"),
         Pattern.compile("https?://([^/]+)/([^/]+)/([^/]+)\\.git"),
         Pattern.compile("git://([^/]+)/([^/]+)/([^/]+)\\.git"),
         Pattern.compile("ssh://git@([^/]+)/([^/]+)/([^/]+)\\.git"),
+        Pattern.compile("ssh://([^/]+)/([^/]+)/([^/]+)\\.git"),
         /**
          * The second set of patterns extract the host, owner and repository names
          * from all other URLs. Note that these patterns must be processed *after*
