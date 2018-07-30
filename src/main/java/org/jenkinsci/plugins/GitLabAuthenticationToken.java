@@ -39,6 +39,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.providers.AbstractAuthenticationToken;
@@ -48,9 +51,6 @@ import org.gitlab.api.TokenType;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 import hudson.security.SecurityRealm;
 import jenkins.model.Jenkins;
@@ -268,7 +268,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 						// could be non-existant)
 						return Boolean.FALSE;
 					} else {
-						return repository.isPublic();
+						return Boolean.TRUE.equals(repository.isPublic());
 					}
 				}
 			});
