@@ -5,3 +5,5 @@ work
 .settings
 *.iml
 .idea
+*.swp
+*.swo
