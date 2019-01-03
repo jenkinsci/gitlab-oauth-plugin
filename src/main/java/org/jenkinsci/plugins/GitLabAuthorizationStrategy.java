@@ -20,25 +20,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
-
  */
+
 package org.jenkinsci.plugins;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import hudson.Extension;
-import hudson.model.AbstractProject;
+
+import hudson.model.AbstractItem;
 import hudson.model.Descriptor;
 import hudson.model.Job;
+
 import hudson.security.ACL;
 import hudson.security.AuthorizationStrategy;
+
+import jenkins.branch.MultiBranchProject;
 
 /**
  * @author mocleiri
@@ -48,34 +52,100 @@ import hudson.security.AuthorizationStrategy;
  */
 public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
 
-    /**
-     * @param allowAnonymousReadPermission
-     * @since 0.19
-     */
-    @DataBoundConstructor
-    public GitLabAuthorizationStrategy(String adminUserNames,
-            boolean authenticatedUserReadPermission,
-            boolean useRepositoryPermissions,
-            boolean authenticatedUserCreateJobPermission,
-            String organizationNames,
-            boolean allowGitlabWebHookPermission,
-            boolean allowCcTrayPermission,
-            boolean allowAnonymousReadPermission,
-            boolean allowAnonymousJobStatusPermission) {
-        super();
+    private List<String> organizationNameList;
+    private List<String> adminUserNameList;
+    private boolean authenticatedUserReadPermission;
+    private boolean useRepositoryPermissions;
+    private boolean authenticatedUserCreateJobPermission;
+    private boolean allowGitlabWebHookPermission;
+    private boolean allowCcTrayPermission;
+    private boolean allowAnonymousReadPermission;
+    private boolean allowAnonymousJobStatusPermission;
 
-        rootACL = new GitLabRequireOrganizationMembershipACL(adminUserNames,
-                organizationNames,
-                authenticatedUserReadPermission,
-                useRepositoryPermissions,
-                authenticatedUserCreateJobPermission,
-                allowGitlabWebHookPermission,
-                allowCcTrayPermission,
-                allowAnonymousReadPermission,
-                allowAnonymousJobStatusPermission);
+    @Extension
+    public static final class DescriptorImpl extends Descriptor<AuthorizationStrategy> {
+
+        @Override
+        public String getDisplayName() {
+            return "Gitlab Commiter Authorization Strategy";
+        }
+
+        @Override
+        public String getHelpFile() {
+            return "/plugin/gitlab-oauth/help/help-authorization-strategy.html";
+        }
+
     }
 
-    private final GitLabRequireOrganizationMembershipACL rootACL;
+    @DataBoundConstructor
+    public GitLabAuthorizationStrategy(
+        String organizationNames,
+        String adminUserNames,
+        boolean authenticatedUserReadPermission,
+        boolean useRepositoryPermissions,
+        boolean authenticatedUserCreateJobPermission,
+        boolean allowGitlabWebHookPermission,
+        boolean allowCcTrayPermission,
+        boolean allowAnonymousReadPermission,
+        boolean allowAnonymousJobStatusPermission
+    ) {
+        super();
+
+        this.organizationNameList = new ArrayList<String>();
+        this.adminUserNameList = new ArrayList<String>();
+
+        for (String orgName : organizationNames.split(",")) {
+            this.organizationNameList.add(orgName.trim());
+        }
+
+        for (String userName : adminUserNames.split(",")) {
+            this.adminUserNameList.add(userName.trim());
+        }
+
+        this.authenticatedUserReadPermission = authenticatedUserReadPermission;
+        this.useRepositoryPermissions = useRepositoryPermissions;
+        this.authenticatedUserCreateJobPermission = authenticatedUserCreateJobPermission;
+        this.allowGitlabWebHookPermission = allowGitlabWebHookPermission;
+        this.allowCcTrayPermission = allowCcTrayPermission;
+        this.allowAnonymousReadPermission = allowAnonymousReadPermission;
+        this.allowAnonymousJobStatusPermission = allowAnonymousJobStatusPermission;
+    }
+
+    public String getOrganizationNames() {
+        return StringUtils.join(this.organizationNameList, ", ");
+    }
+
+    public String getAdminUserNames() {
+        return StringUtils.join(this.adminUserNameList, ", ");
+    }
+
+    public boolean isUseRepositoryPermissions() {
+        return this.useRepositoryPermissions;
+    }
+
+    public boolean isAuthenticatedUserCreateJobPermission() {
+        return this.authenticatedUserCreateJobPermission;
+    }
+
+    public boolean isAuthenticatedUserReadPermission() {
+        return this.authenticatedUserReadPermission;
+    }
+
+    public boolean isAllowGitlabWebHookPermission() {
+        return this.allowGitlabWebHookPermission;
+    }
+
+    public boolean isAllowCcTrayPermission() {
+        return this.allowCcTrayPermission;
+    }
+
+    public boolean isAllowAnonymousReadPermission() {
+        return this.allowAnonymousReadPermission;
+    }
+
+    public boolean isAllowAnonymousJobStatusPermission() {
+        return this.allowAnonymousJobStatusPermission;
+    }
 
     /*
      * (non-Javadoc)
@@ -84,17 +154,66 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
      */
     @Override
     public ACL getRootACL() {
-        return rootACL;
+        return new GitLabRootACL(
+            this.organizationNameList,
+            this.adminUserNameList,
+            this.authenticatedUserReadPermission,
+            this.useRepositoryPermissions,
+            this.authenticatedUserCreateJobPermission,
+            this.allowGitlabWebHookPermission,
+            this.allowCcTrayPermission,
+            this.allowAnonymousReadPermission,
+            this.allowAnonymousJobStatusPermission
+        );
+    }
+
+    private GitLabJobACL getJobACL(Job<?,?> job) {
+        return new GitLabJobACL(
+            this.organizationNameList,
+            this.adminUserNameList,
+            this.authenticatedUserReadPermission,
+            this.useRepositoryPermissions,
+            this.authenticatedUserCreateJobPermission,
+            this.allowGitlabWebHookPermission,
+            this.allowCcTrayPermission,
+            this.allowAnonymousReadPermission,
+            this.allowAnonymousJobStatusPermission,
+            job
+        );
+    }
+
+    private GitLabMultiBranchProjectACL getMultiBranchProjectACL(MultiBranchProject project) {
+        return new GitLabMultiBranchProjectACL(
+            this.organizationNameList,
+            this.adminUserNameList,
+            this.authenticatedUserReadPermission,
+            this.useRepositoryPermissions,
+            this.authenticatedUserCreateJobPermission,
+            this.allowGitlabWebHookPermission,
+            this.allowCcTrayPermission,
+            this.allowAnonymousReadPermission,
+            this.allowAnonymousJobStatusPermission,
+            project
+        );
     }
 
     @Override
-	public ACL getACL(Job<?,?> job) {
-        if(job instanceof AbstractProject) {
-            AbstractProject project = (AbstractProject)job;
-            GitLabRequireOrganizationMembershipACL gitlabACL = (GitLabRequireOrganizationMembershipACL) getRootACL();
-            return gitlabACL.cloneForProject(project);
+    public ACL getACL(AbstractItem item) {
+        if (item instanceof MultiBranchProject) {
+            return this.getMultiBranchProjectACL((MultiBranchProject) item);
         } else {
-            return getRootACL();
+            return this.getRootACL();
+        }
+    }
+
+    @Override
+    public ACL getACL(Job<?,?> job) {
+        if (job.getParent() instanceof MultiBranchProject) {
+            // for derived jobs within a multibranch project we inherit permissions from
+            // the project as that's where the gitlab repo is configured as a branch source.
+            return this.getMultiBranchProjectACL((MultiBranchProject) job.getParent());
+        } else {
+            return this.getJobACL(job);
         }
     }
 
@@ -113,118 +232,32 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#getOrganizationNameList()
-     */
-    public String getOrganizationNames() {
-        return StringUtils.join(rootACL.getOrganizationNameList().iterator(), ", ");
-    }
-
-    /**
-     * @return
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#getAdminUserNameList()
-     */
-    public String getAdminUserNames() {
-        return StringUtils.join(rootACL.getAdminUserNameList().iterator(), ", ");
-    }
-
-    /**
-     * @return
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isUseRepositoryPermissions()
-     */
-    public boolean isUseRepositoryPermissions() {
-        return rootACL.isUseRepositoryPermissions();
-    }
-
-    /**
-     * @return
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserCreateJobPermission()
-     */
-    public boolean isAuthenticatedUserCreateJobPermission() {
-        return rootACL.isAuthenticatedUserCreateJobPermission();
-    }
-
-    /**
-     * @return
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserReadPermission()
-     */
-    public boolean isAuthenticatedUserReadPermission() {
-        return rootACL.isAuthenticatedUserReadPermission();
-    }
-
-    /**
-     * @return
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowGitlabWebHookPermission()
-     */
-    public boolean isAllowGitlabWebHookPermission() {
-        return rootACL.isAllowGitlabWebHookPermission();
-    }
-
-    /**
-     * @return
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowCcTrayPermission()
-     */
-    public boolean isAllowCcTrayPermission() {
-        return rootACL.isAllowCcTrayPermission();
-    }
-
-
-    /**
-     * @return
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowAnonymousReadPermission()
-     */
-    public boolean isAllowAnonymousReadPermission() {
-        return rootACL.isAllowAnonymousReadPermission();
-    }
-
-    /**
-     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowAnonymousJobStatusPermission()
-     * @return
-     */
-    public boolean isAllowAnonymousJobStatusPermission() {
-        return rootACL.isAllowAnonymousJobStatusPermission();
-    }
-
-    /**
      * Compare an object against this instance for equivalence.
      * @param object An object to campare this instance to.
      * @return true if the objects are the same instance and configuration.
      */
     @Override
     public boolean equals(Object object){
-        if(object instanceof GitLabAuthorizationStrategy) {
-            GitLabAuthorizationStrategy obj = (GitLabAuthorizationStrategy) object;
-            return this.getOrganizationNames().equals(obj.getOrganizationNames()) &&
-                this.getAdminUserNames().equals(obj.getAdminUserNames()) &&
-                this.isUseRepositoryPermissions() == obj.isUseRepositoryPermissions() &&
-                this.isAuthenticatedUserCreateJobPermission() == obj.isAuthenticatedUserCreateJobPermission() &&
-                this.isAuthenticatedUserReadPermission() == obj.isAuthenticatedUserReadPermission() &&
-                this.isAllowGitlabWebHookPermission() == obj.isAllowGitlabWebHookPermission() &&
-                this.isAllowCcTrayPermission() == obj.isAllowCcTrayPermission() &&
-                this.isAllowAnonymousReadPermission() == obj.isAllowAnonymousReadPermission() &&
-                this.isAllowAnonymousJobStatusPermission() == obj.isAllowAnonymousJobStatusPermission();
-        } else {
+        if (!(object instanceof GitLabAuthorizationStrategy)) {
             return false;
         }
+
+        GitLabAuthorizationStrategy other = (GitLabAuthorizationStrategy) object;
+
+        return this.organizationNameList.equals(other.organizationNameList)
+            && this.adminUserNameList.equals(other.adminUserNameList)
+            && this.authenticatedUserReadPermission == other.authenticatedUserReadPermission
+            && this.useRepositoryPermissions == other.useRepositoryPermissions
+            && this.authenticatedUserCreateJobPermission == other.authenticatedUserCreateJobPermission
+            && this.allowGitlabWebHookPermission == other.allowGitlabWebHookPermission
+            && this.allowCcTrayPermission == other.allowCcTrayPermission
+            && this.allowAnonymousReadPermission == other.allowAnonymousReadPermission
+            && this.allowAnonymousJobStatusPermission == other.allowAnonymousJobStatusPermission;
     }
 
     @Override
     public int hashCode() {
-    	return HashCodeBuilder.reflectionHashCode(this, false);
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
-    @Extension
-    public static final class DescriptorImpl extends
-            Descriptor<AuthorizationStrategy> {
-
-        @Override
-		public String getDisplayName() {
-            return "Gitlab Commiter Authorization Strategy";
-        }
-
-        @Override
-		public String getHelpFile() {
-            return "/plugin/gitlab-oauth/help/help-authorization-strategy.html";
-        }
-    }
 }

@@ -11,7 +11,7 @@
     <version>1.5-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
-        <jenkins.version>2.89.2</jenkins.version>
+        <jenkins.version>2.150.1</jenkins.version>
         <java.level>8</java.level>
 	<!--        
 	<jersey.version>2.26</jersey.version>
@@ -70,11 +70,26 @@
             <version>1.20</version>
         </dependency>
         <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-job</artifactId>
+            <version>2.31</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-cps</artifactId>
+            <version>2.61</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-multibranch</artifactId>
+            <version>2.20</version>
+        </dependency>
+        <dependency>
             <groupId>org.gitlab</groupId>
             <artifactId>java-gitlab-api</artifactId>
             <version>4.0.0</version>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>org.jenkins-ci</groupId>
             <artifactId>annotation-indexer</artifactId>
             <version>1.12</version>
