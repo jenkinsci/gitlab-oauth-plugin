@@ -91,16 +91,8 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     ) {
         super();
 
-        this.organizationNameList = new ArrayList<String>();
-        this.adminUserNameList = new ArrayList<String>();
-
-        for (String orgName : organizationNames.split(",")) {
-            this.organizationNameList.add(orgName.trim());
-        }
-
-        for (String userName : adminUserNames.split(",")) {
-            this.adminUserNameList.add(userName.trim());
-        }
+        this.organizationNameList = this.listFromCsvString(organizationNames);
+        this.adminUserNameList = this.listFromCsvString(adminUserNames);
 
         this.authenticatedUserReadPermission = authenticatedUserReadPermission;
         this.useRepositoryPermissions = useRepositoryPermissions;
@@ -109,6 +101,20 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
         this.allowCcTrayPermission = allowCcTrayPermission;
         this.allowAnonymousReadPermission = allowAnonymousReadPermission;
         this.allowAnonymousJobStatusPermission = allowAnonymousJobStatusPermission;
+    }
+
+    private ArrayList<String> listFromCsvString(String input) {
+        ArrayList<String> list = new ArrayList<String>();
+
+        for (String part : input.split(",")) {
+            String trimmed = part.trim();
+
+            if (!trimmed.isEmpty()) {
+                list.add(trimmed);
+            }
+        }
+
+        return list;
     }
 
     public String getOrganizationNames() {

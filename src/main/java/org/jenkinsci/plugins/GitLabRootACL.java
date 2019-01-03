@@ -26,6 +26,7 @@ package org.jenkinsci.plugins;
 
 import java.util.logging.Logger;
 import java.util.List;
+import java.util.ArrayList;
 import java.net.URI;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -96,6 +97,14 @@ public class GitLabRootACL extends ACL {
         this.allowCcTrayPermission = allowCcTrayPermission;
         this.allowAnonymousReadPermission = allowAnonymousReadPermission;
         this.allowAnonymousJobStatusPermission = allowAnonymousJobStatusPermission;
+
+        if (this.organizationNameList == null) {
+            this.organizationNameList = new ArrayList<String>(0);
+        }
+
+        if (this.adminUserNameList == null) {
+            this.adminUserNameList = new ArrayList<String>(0);
+        }
     }
 
     protected boolean isReadPermission(Permission permission) {
