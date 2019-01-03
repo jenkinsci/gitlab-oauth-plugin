@@ -72,7 +72,7 @@ public class GitLabMultiBranchProjectACL extends GitLabRepoBasedACL {
 
         for (SCMSource source : sources) {
             if (source instanceof GitSCMSource) {
-                // This is for the derived folder crated by multibranch projects.
+                // This is for the derived folder created by multibranch projects.
                 // We grant access to all branches if the user can access any of the sources.
                 String repoUrl = ((GitSCMSource) source).getRemote();
                 String repoName = this.getRepositoryNameFromUrl(repoUrl);
