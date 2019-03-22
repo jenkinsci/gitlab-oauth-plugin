@@ -58,6 +58,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     private final boolean authenticatedUserReadPermission;
     private final boolean useRepositoryPermissions;
     private final boolean authenticatedUserCreateJobPermission;
+    private final boolean authenticatedUserStopBuildPermission;
     private final boolean allowGitlabWebHookPermission;
     private final boolean allowCcTrayPermission;
     private final boolean allowAnonymousReadPermission;
@@ -116,6 +117,10 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             }
 
             if (authenticatedUserCreateJobPermission && permission.equals(Item.CREATE)) {
+                return true;
+            }
+
+            if (authenticatedUserStopBuildPermission && permission.equals(Item.CANCEL)) {
                 return true;
             }
 
@@ -283,6 +288,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             boolean authenticatedUserReadPermission,
             boolean useRepositoryPermissions,
             boolean authenticatedUserCreateJobPermission,
+            boolean authenticatedUserStopBuildPermission,
             boolean allowGitlabWebHookPermission,
             boolean allowCcTrayPermission,
             boolean allowAnonymousReadPermission,
@@ -292,6 +298,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
         this.authenticatedUserReadPermission      = authenticatedUserReadPermission;
         this.useRepositoryPermissions             = useRepositoryPermissions;
         this.authenticatedUserCreateJobPermission = authenticatedUserCreateJobPermission;
+        this.authenticatedUserStopBuildPermission = authenticatedUserStopBuildPermission;
         this.allowGitlabWebHookPermission         = allowGitlabWebHookPermission;
         this.allowCcTrayPermission                = allowCcTrayPermission;
         this.allowAnonymousReadPermission         = allowAnonymousReadPermission;
@@ -320,6 +327,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             boolean authenticatedUserReadPermission,
             boolean useRepositoryPermissions,
             boolean authenticatedUserCreateJobPermission,
+            boolean authenticatedUserStopBuildPermission,
             boolean allowGitlabWebHookPermission,
             boolean allowCcTrayPermission,
             boolean allowAnonymousReadPermission,
@@ -332,6 +340,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
         this.authenticatedUserReadPermission      = authenticatedUserReadPermission;
         this.useRepositoryPermissions             = useRepositoryPermissions;
         this.authenticatedUserCreateJobPermission = authenticatedUserCreateJobPermission;
+        this.authenticatedUserStopBuildPermission = authenticatedUserStopBuildPermission;
         this.allowGitlabWebHookPermission         = allowGitlabWebHookPermission;
         this.allowCcTrayPermission                = allowCcTrayPermission;
         this.allowAnonymousReadPermission         = allowAnonymousReadPermission;
@@ -346,6 +355,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             this.authenticatedUserReadPermission,
             this.useRepositoryPermissions,
             this.authenticatedUserCreateJobPermission,
+            this.authenticatedUserStopBuildPermission,
             this.allowGitlabWebHookPermission,
             this.allowCcTrayPermission,
             this.allowAnonymousReadPermission,
@@ -367,6 +377,10 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
 
     public boolean isAuthenticatedUserCreateJobPermission() {
         return authenticatedUserCreateJobPermission;
+    }
+
+    public boolean isAuthenticatedUserStopBuildPermission() {
+        return authenticatedUserStopBuildPermission;
     }
 
     public boolean isAuthenticatedUserReadPermission() {

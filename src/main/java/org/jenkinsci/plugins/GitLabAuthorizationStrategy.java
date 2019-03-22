@@ -57,6 +57,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
             boolean authenticatedUserReadPermission,
             boolean useRepositoryPermissions,
             boolean authenticatedUserCreateJobPermission,
+            boolean authenticatedUserStopBuildPermission,
             String organizationNames,
             boolean allowGitlabWebHookPermission,
             boolean allowCcTrayPermission,
@@ -69,6 +70,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
                 authenticatedUserReadPermission,
                 useRepositoryPermissions,
                 authenticatedUserCreateJobPermission,
+                authenticatedUserStopBuildPermission,
                 allowGitlabWebHookPermission,
                 allowCcTrayPermission,
                 allowAnonymousReadPermission,
@@ -146,6 +148,14 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @return
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserStopBuildPermission()
+     */
+    public boolean isAuthenticatedUserStopBuildPermission() {
+        return rootACL.isAuthenticatedUserStopBuildPermission();
+    }
+
+    /**
+     * @return
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserReadPermission()
      */
     public boolean isAuthenticatedUserReadPermission() {
@@ -198,6 +208,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
                 this.getAdminUserNames().equals(obj.getAdminUserNames()) &&
                 this.isUseRepositoryPermissions() == obj.isUseRepositoryPermissions() &&
                 this.isAuthenticatedUserCreateJobPermission() == obj.isAuthenticatedUserCreateJobPermission() &&
+                this.isAuthenticatedUserStopBuildPermission() == obj.isAuthenticatedUserStopBuildPermission() &&
                 this.isAuthenticatedUserReadPermission() == obj.isAuthenticatedUserReadPermission() &&
                 this.isAllowGitlabWebHookPermission() == obj.isAllowGitlabWebHookPermission() &&
                 this.isAllowCcTrayPermission() == obj.isAllowCcTrayPermission() &&
