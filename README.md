@@ -7,6 +7,8 @@
    Get plugins from `target/gitlab-oauth.hpi`
 
 
+-------------
+
 * License: [MIT Licensed](LICENSE.txt)
 * Read more: [GitLab OAuth Plugin wiki page][wiki]
 * Latest build: [![Build Status][build-image]][build-link]
