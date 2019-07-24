@@ -277,7 +277,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     }
 
     private String buildRedirectUrl(StaplerRequest request, String referer) throws MalformedURLException {
-        URL currentUrl = new URL(request.getRequestURL().toString());
+        URL currentUrl = new URL(Jenkins.getInstance().getRootUrl());
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("state", referer));
 
