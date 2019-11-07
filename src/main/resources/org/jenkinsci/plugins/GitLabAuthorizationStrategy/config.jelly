@@ -24,6 +24,10 @@
             <f:checkbox />
         </f:entry>
 
+        <f:entry title="Grant STOP Build permissions to all Authenticated Users" field="authenticatedUserStopBuildPermission" help="/plugin/gitlab-oauth/help/auth/grant-stop-build-to-authenticated-help.html">
+            <f:checkbox />
+        </f:entry>
+
         <f:entry title="Grant READ permissions for /gitlab-webhook" field="allowGitlabWebHookPermission" help="/plugin/gitlab-oauth/help/auth/grant-read-to-gitlab-webhook-help.html">
             <f:checkbox />
         </f:entry>
