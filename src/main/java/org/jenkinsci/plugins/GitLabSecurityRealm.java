@@ -92,7 +92,8 @@ import hudson.security.SecurityRealm;
 import hudson.security.UserMayOrMayNotExistException;
 import hudson.tasks.Mailer;
 import jenkins.model.Jenkins;
-import sun.net.util.URLUtil;
+
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -345,6 +346,14 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         if (StringUtils.isNotBlank(accessToken)) {
             // only set the access token if it exists.
             GitLabAuthenticationToken auth = new GitLabAuthenticationToken(accessToken, getGitlabApiUri(), TokenType.ACCESS_TOKEN);
+
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                // avoid session fixation
+                session.invalidate();
+            }
+            request.getSession(true);
+
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             GitlabUser self = auth.getMyself();
