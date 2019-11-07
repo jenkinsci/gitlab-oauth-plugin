@@ -67,6 +67,7 @@ import org.kohsuke.stapler.Header;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -264,12 +265,22 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         return clientSecret;
     }
 
-    public HttpResponse doCommenceLogin(StaplerRequest request, @Header("Referer") final String referer) throws IOException {
+    // "from" is coming from SecurityRealm/loginLink.jelly
+    public HttpResponse doCommenceLogin(StaplerRequest request, @QueryParameter String from, @Header("Referer") final String referer) throws IOException {
         // 2. Requesting authorization :
         // http://doc.gitlab.com/ce/api/oauth2.html
 
+        String redirectOnFinish;
+        if (from != null && Util.isSafeToRedirectTo(from)) {
+            redirectOnFinish = from;
+        } else if (referer != null && (referer.startsWith(Jenkins.getInstance().getRootUrl()) || Util.isSafeToRedirectTo(referer))) {
+            redirectOnFinish = referer;
+        } else {
+            redirectOnFinish = Jenkins.getInstance().getRootUrl();
+        }
+
         List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request, referer)));
+        parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request, redirectOnFinish)));
         parameters.add(new BasicNameValuePair("response_type", "code"));
         parameters.add(new BasicNameValuePair("client_id", clientID));
 
