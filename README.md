@@ -25,7 +25,7 @@ Jenkins groups for authorization.
 
 More comprehensive documentation is listed on the [wiki page][wiki].
 
-[build-image]: https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/gitlab-oauth-plugin
-[build-link]: https://jenkins.ci.cloudbees.com/job/plugins/job/gitlab-oauth-plugin/
+[build-image]: https://ci.jenkins.io/buildStatus/icon?job=Plugins/gitlab-oauth-plugin/master
+[build-link]: https://ci.jenkins.io/job/Plugins/job/gitlab-oauth-plugin/job/master/
 [gitlab-wiki-oauth]: http://doc.gitlab.com/ce/api/oauth2.html
 [wiki]: https://wiki.jenkins-ci.org/display/JENKINS/Gitlab+OAuth+Plugin
