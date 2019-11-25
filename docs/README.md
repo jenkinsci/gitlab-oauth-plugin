@@ -30,7 +30,7 @@ realm to authenticate Jenkins users via GitLab OAuth.
     Client ID, Client Secret, and OAuth Scope(s).
 3.  If you're using GitLab Enterprise then the API URI is
     <https://ghe.acme.com/api/v3>. The prefix
-    "[api/v3](https://ghe.acme.com/api/v3){.external-link}" will be
+    "[api/v3](https://ghe.acme.com/api/v3)" will be
     completed by the plugin
 
 In the plugin configuration pages each field has a little question mark icon next to it.
