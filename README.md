@@ -1,6 +1,6 @@
 # Jenkins GitLab OAuth Plugin
-![Jenkins Plugins](https://img.shields.io/jenkins/plugin/v/gitlab-oauth)
-![Jenkins Plugin installs](https://img.shields.io/jenkins/plugin/i/gitlab-oauth?color=blue)
+[![Jenkins Plugins](https://img.shields.io/jenkins/plugin/v/gitlab-oauth)](https://plugins.jenkins.io/gitlab-oauth)
+[![Jenkins Plugin installs](https://img.shields.io/jenkins/plugin/i/gitlab-oauth?color=blue)](https://plugins.jenkins.io/gitlab-oauth)
 [![Build Status][build-image]][build-link]
 ## Get Latest Package
 
