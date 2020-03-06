@@ -54,6 +54,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             .getLogger(GitLabRequireOrganizationMembershipACL.class.getName());
 
     private final List<String> organizationNameList;
+    private final List<String> adminOrganizationNameList;
     private final List<String> adminUserNameList;
     private final boolean authenticatedUserReadPermission;
     private final boolean useRepositoryPermissions;
@@ -87,7 +88,15 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                 log.finest("Granting Admin rights to user " + candidateName);
                 return true;
             }
-
+            if(this.adminOrganizationNameList != null) {
+                for (String adminOrganizationName : this.adminOrganizationNameList) {
+                    if (authenticationToken.hasOrganizationPermission(candidateName, adminOrganizationName)) {
+                        log.finest("Granting Admin rights to user " +
+                                   candidateName + " a member of " + adminOrganizationName);
+                        return true;
+                    }
+                }
+            }
             if (this.project != null) {
                 if (useRepositoryPermissions) {
                     if(hasRepositoryPermission(authenticationToken, permission)) {
@@ -284,6 +293,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     }
 
     public GitLabRequireOrganizationMembershipACL(String adminUserNames,
+            String adminOrganizationNames,
             String organizationNames,
             boolean authenticatedUserReadPermission,
             boolean useRepositoryPermissions,
@@ -311,6 +321,12 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             adminUserNameList.add(part.trim());
         }
 
+        this.adminOrganizationNameList = new LinkedList<String>();
+        parts= adminOrganizationNames.split(",");
+        for (String part : parts) {
+            this.adminOrganizationNameList.add(part);
+        }
+
         this.organizationNameList = new LinkedList<String>();
 
         parts = organizationNames.split(",");
@@ -323,6 +339,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     }
 
     public GitLabRequireOrganizationMembershipACL(List<String> adminUserNameList,
+            List<String> adminOrganizationNameList,
             List<String> organizationNameList,
             boolean authenticatedUserReadPermission,
             boolean useRepositoryPermissions,
@@ -336,6 +353,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
         super();
 
         this.adminUserNameList                    = adminUserNameList;
+        this.adminOrganizationNameList            = adminOrganizationNameList;
         this.organizationNameList                 = organizationNameList;
         this.authenticatedUserReadPermission      = authenticatedUserReadPermission;
         this.useRepositoryPermissions             = useRepositoryPermissions;
@@ -351,6 +369,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     public GitLabRequireOrganizationMembershipACL cloneForProject(AbstractProject project) {
         return new GitLabRequireOrganizationMembershipACL(
             this.adminUserNameList,
+            this.adminOrganizationNameList,
             this.organizationNameList,
             this.authenticatedUserReadPermission,
             this.useRepositoryPermissions,
@@ -369,6 +388,10 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
 
     public List<String> getAdminUserNameList() {
         return adminUserNameList;
+    }
+
+    public List<String> getAdminOrganizationNameList() {
+        return adminOrganizationNameList;
     }
 
     public boolean isUseRepositoryPermissions() {

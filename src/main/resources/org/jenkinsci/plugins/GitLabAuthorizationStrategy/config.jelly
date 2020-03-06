@@ -8,6 +8,10 @@
             <f:textbox />
         </f:entry>
 
+        <f:entry title="Gitlab Groups for Admin"  field="adminOrganizationNames" help="/plugin/gitlab-oauth/help/auth/admin-organization-names-help.html">
+            <f:textbox />
+        </f:entry>
+
         <f:entry title="Participant in Organization"  field="organizationNames" help="/plugin/gitlab-oauth/help/auth/organization-names-help.html">
             <f:textbox />
         </f:entry>
