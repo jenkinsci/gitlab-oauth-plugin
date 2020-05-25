@@ -59,6 +59,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
             boolean authenticatedUserCreateJobPermission,
             boolean authenticatedUserStopBuildPermission,
             String organizationNames,
+            String adminOrganizationNames,
             boolean allowGitlabWebHookPermission,
             boolean allowCcTrayPermission,
             boolean allowAnonymousReadPermission,
@@ -66,6 +67,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
         super();
 
         rootACL = new GitLabRequireOrganizationMembershipACL(adminUserNames,
+                adminOrganizationNames,
                 organizationNames,
                 authenticatedUserReadPermission,
                 useRepositoryPermissions,
@@ -120,6 +122,14 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
      */
     public String getOrganizationNames() {
         return StringUtils.join(rootACL.getOrganizationNameList().iterator(), ", ");
+    }
+
+    /**
+     * @return
+     * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#getAdminOrganizationNameList()
+     */
+    public String getAdminOrganizationNames() {
+        return StringUtils.join(rootACL.getAdminOrganizationNameList().iterator(), ", ");
     }
 
     /**
@@ -205,6 +215,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
         if(object instanceof GitLabAuthorizationStrategy) {
             GitLabAuthorizationStrategy obj = (GitLabAuthorizationStrategy) object;
             return this.getOrganizationNames().equals(obj.getOrganizationNames()) &&
+                this.getAdminOrganizationNames().equals(obj.getAdminOrganizationNames()) &&
                 this.getAdminUserNames().equals(obj.getAdminUserNames()) &&
                 this.isUseRepositoryPermissions() == obj.isUseRepositoryPermissions() &&
                 this.isAuthenticatedUserCreateJobPermission() == obj.isAuthenticatedUserCreateJobPermission() &&
