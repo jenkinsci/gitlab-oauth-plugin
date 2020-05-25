@@ -1,20 +1,38 @@
+
+
+1.6
+-----------------------------------------------------------------------------------
+ - **Odilo Oehmichen** : introduces gitlab groups for admins (#23)
+ - **Demenev Anton** : Fix group and organisation check. (#21)
+ - **Flemming Frandsen** : Fixed the horrendous security problem caused by not qualifying groups with the parent groups and making sure that groups cannot be conflated with users (#22)
+ - **Oleg Nenashev** : Reorder content on the README page to be more user-focused (#20)
+ - **Zbynek Konecny** : Badges link to plugin site
+ - **Zbynek Konecny** : Use GitHub as source of documentation
+ - **Zbynek Konecny** : Clean up markdown
+ - **Zbynek Konecny** : Update documentation links
+ - **Zbynek Konecny** : Import Wiki documentation
+ - **Mohamed EL Habib** : fixed build status and link
+
 1.5
 -----------------------------------------------------------------------------------
- - **Bjoern Kasteleiner** : [SECURITY-795](https://jenkins.io/security/advisory/2019-08-07/#SECURITY-795) Fix session fixation vulnerability (#16)
- - **Wadeck Follonier** : [SECURITY-796](https://jenkins.io/security/advisory/2019-08-07/#SECURITY-796) Fix open redirect vulnerability (#17)
+ - **Giulio Ruggeri** : Changed redirect url build using jenkins root url (#15)
+ - **Bjoern Kasteleiner** : JENKINS-59069 / SECURITY-795: Fix session fixation vulnerability (#16)
+ - **Wadeck Follonier** : [SECURITY-796][JENKINS-59069] Open redirect prevention (#17)
+ - **johny.zheng** : Grant STOP Build permissions to all Authenticated Users (#14)
+ - **isaacdong** : [JENKINS-52129] 1. bug fixed: repository.isPublic returns null. 2 add 2 git URL patterns without "git@".
 
 1.4
 -----------------------------------------------------------------------------------
- - **Mario Steinitz** : [JENKINS-50838](https://issues.jenkins-ci.org/browse/JENKINS-50838) Change GitLab API support from v3 to v4.
+ - **Mario Steinitz** : [JENKINS-50838] Change GitLab API support from v3 to v4.
 
 1.3
 -----------------------------------------------------------------------------------
- - **Mohamed EL Habib** : [JENKINS-47097](https://issues.jenkins-ci.org/browse/JENKINS-47097) added support to login using gitlab private token
+ - **Mohamed EL Habib** : [JENKINS-47097] added support to login using gitlab private token
 
 1.2
 -----------------------------------------------------------------------------------
- - **Mohamed EL Habib** : [JENKINS-44489](https://issues.jenkins-ci.org/browse/JENKINS-44489) fixed findbug introduced by 987608a commit
- - **Mohamed EL Habib** : [JENKINS-44489](https://issues.jenkins-ci.org/browse/JENKINS-44489) fixed logout when the plugin is configured to allow READ permission for Authenticated, but not Anonymous users.
+ - **Mohamed EL Habib** : [JENKINS-44489] fixed findbug introduced by 987608a commit
+ - **Mohamed EL Habib** : [JENKINS-44489] fixed logout when the plugin is configured to allow READ permission for Authenticated, but not Anonymous users.
  - **Mohamed EL Habib** : add jenkins file to build into ci.jenkins.io
 
 1.1
@@ -27,7 +45,7 @@
 
 1.0.9
 -----------------------------------------------------------------------------------
- - **Jairo Ricarte** : [JENKINS-37741](https://issues.jenkins-ci.org/browse/JENKINS-37741) Testing /project path ont allowGitlabWebHookPermission check
+ - **Jairo Ricarte** : [JENKINS-37741] Testing /project path ont allowGitlabWebHookPermission check
  - **Jairo Ricarte** : added new path for  gitlab-plugin's webhook using anonymous permission
 
 1.0.8
@@ -36,11 +54,10 @@
 
 1.0.7
 -----------------------------------------------------------------------------------
- - **Mohamed EL HABIB** : remove GitlabGroup.java copied from java-gitlab-api 1.2.6-SNAPSHOT, using released version 1.2.6
- - **wzxjohn** : [JENKINS-37517](https://issues.jenkins-ci.org/browse/JENKINS-37517) Fix login fails because of a GitLab Api Bug Use v1.2.6 of GitLab Api Client to fix this issue.
- - **wzxjohn** : [JENKINS-37518](https://issues.jenkins-ci.org/browse/JENKINS-37518) Fix api url problem New GitLab Api Client will automatically add api/v3 so we do not need to add api/v3 in config. Maybe this config node can be delete in the future.
+ - **wzxjohn** : [JENKINS-37517] Fix login fails because of a GitLab Api Bug Use v1.2.6 of GitLab Api Client to fix this issue.
+ - **wzxjohn** : [JENKINS-37518] Fix api url problem New GitLab Api Client will automatically add api/v3 so we do not need to add api/v3 in config. Maybe this config node can be delete in the future.
  - **wzxjohn** : Fix ERROR: Failed to load help file: Not Found when click the '?' beside "Grant READ permissions for /gitlab-webhook"
- - **wzxjohn** : [JENKINS-37049](https://issues.jenkins-ci.org/browse/JENKINS-37049) License issue
+ - **wzxjohn** : [JENKINS-37049] License issue
 
 1.0.6
 -----------------------------------------------------------------------------------
@@ -48,7 +65,7 @@
 1.0.5
 -----------------------------------------------------------------------------------
  - **Thorsten** : Change HttpClient configuration to drop usage of methods flagged as @deprecated
- - **Jairo Ricarte** : [JENKINS-36075](https://issues.jenkins-ci.org/browse/JENKINS-36075) Gitlab oauth does not display in Security Realm
+ - **Jairo Ricarte** : [JENKINS-36075]Gitlab oauth does not display in Security Realm
 
 1.0.4
 -----------------------------------------------------------------------------------
@@ -57,13 +74,21 @@
 
 1.0.3
 -----------------------------------------------------------------------------------
- - **Mohamed EL HABIB** : update version after release
- - **Mohamed EL HABIB** : fixed release plugin config to try fix SNAPSHOT deployment instead of release
- - **Mohamed EL HABIB** : fixed release plugin config to try fix SNAPSHOT deployment instead of release
+
+1.0.3
+-----------------------------------------------------------------------------------
+
+1.0.2
+-----------------------------------------------------------------------------------
+
+1.0.1
+-----------------------------------------------------------------------------------
  - **Mohamed EL HABIB** : update pom version
+
+1.0.0
+-----------------------------------------------------------------------------------
  - **Mohamed EL HABIB** : fixed jira add github link
  - **Mohamed EL HABIB** : remove unused code
- - **Mohamed EL HABIB** : workarround to fix NPE into GitlabGroup waiting for 1.2.6 of java-gitlab-api to be released
  - **Mohamed EL HABIB** : fixed licence copyright
  - **Mohamed EL HABIB** : cleanup code style
  - **Mohamed EL HABIB** : using 1.113 version of the hpi-plugin, starting from 1.114 gitlab real is not actif into security section
@@ -78,33 +103,19 @@
  - **Mohamed EL HABIB** : replace github by gitlab
  - **Mohamed EL HABIB** : alpha version extracted from github-oauth-plugin
  - **Mohamed EL HABIB** : alpha version extracted from github-oauth-plugin
- - **Sam Gleske** : [maven-release-plugin] prepare for next development iteration
- - **Sam Gleske** : [maven-release-plugin] prepare release github-oauth-0.22.3
  - **Seth Rosenblum** : Reduce read access log messages to finest
- - **Sam Gleske** : [maven-release-plugin] prepare for next development iteration
- - **Sam Gleske** : [maven-release-plugin] prepare release github-oauth-0.22.2
  - **Sam Gleske** : Revert "Update wiki page URL.  Disappeared from the update"
- - **Sam Gleske** : [maven-release-plugin] prepare for next development iteration
- - **Sam Gleske** : [maven-release-plugin] prepare release github-oauth-0.22.1
  - **Sam Gleske** : Update wiki page URL.  Disappeared from the update
- - **Sam Gleske** : [maven-release-plugin] prepare for next development iteration
- - **Sam Gleske** : [maven-release-plugin] prepare release github-oauth-0.22
  - **Sam Gleske** : Private memberships can be used for authorization
  - **Sam Gleske** : Allow limited oauth scopes
  - **Sam Gleske** : Allow Jenkins email to be set using private email
  - **Sam Gleske** : Automation equals methods
  - **Sam Gleske** : Fix Java 7 compatibility when running unit tests.
- - **Sam Gleske** : [maven-release-plugin] prepare for next development iteration
- - **Sam Gleske** : [maven-release-plugin] prepare release github-oauth-0.21.2
  - **Sam Gleske** : Fix migrating settings from plugin 0.20 to 0.21+
  - **Sam Gleske** : Fix wiki link in README.
  - **Sam Gleske** : New README and CONTRIBUTING document
  - **Joshua Hoblitt** : fix whitespace
- - **Sam Gleske** : [maven-release-plugin] prepare for next development iteration
- - **Sam Gleske** : [maven-release-plugin] prepare release github-oauth-0.21.1
  - **Pascal Widdershoven** : Add support for allowing anonymous ViewStatus permission
- - **Sam Gleske** : [maven-release-plugin] prepare for next development iteration
- - **Sam Gleske** : [maven-release-plugin] prepare release github-oauth-0.21
  - **Julien Carsique** : JENKINS-21331: include teams as groups
  - **Stephen Rosen** : Fix default oauth scope in jelly conf
  - **Stephen Rosen** : Restrict default OAuthScope to "read:org"
@@ -112,29 +123,19 @@
  - **Michael Neale** : allow github oauth tokens to be used to access jenkins api
  - **Joshua Hoblitt** : make Github OAuth Scopes configurable
  - **Alex Rothenberg** : Fix for when user enters a badly formed github url for repo
- - **Surya Gaddipati** : [maven-release-plugin] prepare for next development iteration
- - **Surya Gaddipati** : [maven-release-plugin] prepare release github-oauth-0.20
  - **Surya Gaddipati** : Update to newer version of github api
  - **Jesse Glick** : Adding TODO comment to match e1e10c896dbcf0636222f52e2308d0ebcfe778ef.
  - **Alex Rothenberg** : updated isPublicRepository check to cache results
  - **Matt Aken** : Use asList() to eagerly walk all repositories
  - **Alex Rothenberg** : Optimize the number of github api calls for authorization checks
- - **Kohsuke Kawaguchi** : [maven-release-plugin] prepare for next development iteration
- - **Kohsuke Kawaguchi** : [maven-release-plugin] prepare release github-oauth-0.19
  - **Kohsuke Kawaguchi** : Use Jenkins' proxy configuration
  - **Kohsuke Kawaguchi** : Unneeeded check as githubWebUri is guaranteed non-null at this point.
  - **Kohsuke Kawaguchi** : Restoring backward compatible constructor
  - **Kohsuke Kawaguchi** : Call fireAuthenticated if we can.
  - **Surya Gaddipati** : Revert "Fire SecurityListener#authenticated after user is authenticated."
- - **Surya Gaddipati** : Fire SecurityListener#authenticated after user is authenticated. Also updated to Jenkins Release which supports SecurityListener.
- - **Surya Gaddipati** : [maven-release-plugin] prepare for next development iteration
- - **Surya Gaddipati** : [maven-release-plugin] prepare release github-oauth-0.18
  - **Surya Gaddipati** : Upgrade github-api to 1.54
- - **Surya Gaddipati** : [maven-release-plugin] prepare for next development iteration
- - **Surya Gaddipati** : [maven-release-plugin] prepare release github-oauth-0.17
  - **Surya Gaddipati** : Upgrade github-api version dependency to 1.53
  - **Kohsuke Kawaguchi** : [FIXED JENKINS-23254]
- - **Sam Kottler** : [maven-release-plugin] prepare for next development iteration
  - **Sam Kottler** : Bump the maven-hpi-plugin version
  - **Soren Hansen** : Make no assumption about user's existence
  - **Sam Kottler** : Start fixing indentation issues
@@ -149,14 +150,11 @@
  - **Alex Rothenberg** : User controllable flag to enable/disable reposistory authorization
  - **Alex Rothenberg** : Repository based authorization
  - **Sam Kottler** : Add myself as copyright holder for 2013-2014
- - **Sam Kottler** : [maven-release-plugin] prepare for next development iteration
  - **Soren Hansen** : With no auth token, we are not sure if users exist
  - **Surya Gaddipati** : Use hasExplicitlyConfiguredAddress instead of getAddress(which scans all projects and builds to find users's email address)
  - **Tamás Földesi** : Add support for proxy
  - **Surya Gaddipati** : Dont attempt to set email address property for a user upon login
  - **Sam Kottler** : Add skottler to the developer list
- - **Kohsuke Kawaguchi** : [maven-release-plugin] prepare for next development iteration
- - **Kohsuke Kawaguchi** : [maven-release-plugin] prepare release github-oauth-0.14
  - **Kohsuke Kawaguchi** : Missing dependency in POM
  - **Oren Held** : Do not overwrite user's email, unless it's empty (cherry picked from commit 88f6ee7c893bf509527df6c965e495c0d145c60c)
  - **Kohsuke Kawaguchi** : simplifying the caching code by using Guava
@@ -171,15 +169,9 @@
  - **Tomas Varaneckas** : Resetting organization cache timer
  - **Luís Faceira** : Close #18 - Basic API authentication is possible again
  - **Tomas Varaneckas** : Github organization cache for much faster jenkins UI navigation for non admin users
- - **Johno Crawford** : [maven-release-plugin] prepare for next development iteration
- - **Johno Crawford** : [maven-release-plugin] prepare release github-oauth-0.13.1
  - **Johno Crawford** : Revert "Do not strip protocol from end point."
- - **Johno Crawford** : [maven-release-plugin] prepare for next development iteration
- - **Johno Crawford** : [maven-release-plugin] prepare release github-oauth-0.13
  - **johnou** : Do not strip protocol from end point.
  - **brettlangdon** : changed all occurrences of github.com/account/applications/new to github.com/settings/applications/new
- - **Kohsuke Kawaguchi** : [maven-release-plugin] prepare for next development iteration
- - **Kohsuke Kawaguchi** : [maven-release-plugin] prepare release github-oauth-0.12
  - **Kohsuke Kawaguchi** : Using the latest to fix V2 API removal
  - **Kohsuke Kawaguchi** : Updated to v1.27 to remove the V2 API dependency
  - **Kohsuke Kawaguchi** : exposing OAuth access token programmatically.
@@ -239,7 +231,6 @@
  - **Michael O'Cleirigh** : allow anonymous read.
  - **Michael O'Cleirigh** : change security components to require GithubAuthenticationToken
  - **Michael O'Cleirigh** : bump up plugin version to 0.2-SNAPSHOT
- - **Michael O'Cleirigh** : Fixup SCM section of the pom for the release
  - **Michael O'Cleirigh** : Change Artifactid to github-oauth to make help work.
  - **Michael O'Cleirigh** : @Ignore the testcase as it needs oauth credentials to work.
  - **Michael O'Cleirigh** : change snapshot version to 0.1-SNAPSHOT
