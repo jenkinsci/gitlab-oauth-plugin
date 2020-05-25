@@ -119,9 +119,10 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 			List<GitlabGroup> myTeams = gitLabAPI.getGroups();
 			for (GitlabGroup group : myTeams) {
 				LOGGER.log(Level.FINE, "Fetch teams for user " + userName + " in organization " + group.getName());
-				authorities.add(new GrantedAuthorityImpl(group.getName()));
-				authorities.add(new GrantedAuthorityImpl(
-						group + GitLabOAuthGroupDetails.ORG_TEAM_SEPARATOR + group.getName()));
+
+				GitLabOAuthGroupDetails gitLabOAuthGroupDetails = new GitLabOAuthGroupDetails(group);
+
+				authorities.add(gitLabOAuthGroupDetails.getAuth());
 			}
 		}
 	}
