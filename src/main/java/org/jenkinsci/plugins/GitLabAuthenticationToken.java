@@ -187,7 +187,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	 *
 	 * @param candidateName
 	 * @param organization
-	 * @return
+	 * @return whether given candidate belongs to a given organization
 	 */
 	public boolean hasOrganizationPermission(String candidateName, String organization) {
 		try {

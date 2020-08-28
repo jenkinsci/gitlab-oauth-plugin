@@ -505,7 +505,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     /**
      *
      * @param username
-     * @return
      * @throws UsernameNotFoundException
      * @throws DataAccessException
      */
@@ -562,7 +561,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     /**
      *
      * @param groupName
-     * @return
      * @throws UsernameNotFoundException
      * @throws DataAccessException
      */

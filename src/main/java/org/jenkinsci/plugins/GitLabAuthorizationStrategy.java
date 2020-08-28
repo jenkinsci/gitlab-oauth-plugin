@@ -117,7 +117,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
+     * @return comma- and space-separated organization names
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#getOrganizationNameList()
      */
     public String getOrganizationNames() {
@@ -125,7 +125,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
+     * @return comma- and space-separated admin organization names
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#getAdminOrganizationNameList()
      */
     public String getAdminOrganizationNames() {
@@ -133,7 +133,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
+     * @return comma- and space-separated admin usernames
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#getAdminUserNameList()
      */
     public String getAdminUserNames() {
@@ -141,7 +141,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isUseRepositoryPermissions()
      */
     public boolean isUseRepositoryPermissions() {
@@ -149,7 +148,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserCreateJobPermission()
      */
     public boolean isAuthenticatedUserCreateJobPermission() {
@@ -157,7 +155,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserStopBuildPermission()
      */
     public boolean isAuthenticatedUserStopBuildPermission() {
@@ -165,7 +162,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAuthenticatedUserReadPermission()
      */
     public boolean isAuthenticatedUserReadPermission() {
@@ -173,7 +169,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowGitlabWebHookPermission()
      */
     public boolean isAllowGitlabWebHookPermission() {
@@ -181,7 +176,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     /**
-     * @return
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowCcTrayPermission()
      */
     public boolean isAllowCcTrayPermission() {
@@ -190,7 +184,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
 
 
     /**
-     * @return
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowAnonymousReadPermission()
      */
     public boolean isAllowAnonymousReadPermission() {
@@ -199,7 +192,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
 
     /**
      * @see org.jenkinsci.plugins.GitLabRequireOrganizationMembershipACL#isAllowAnonymousJobStatusPermission()
-     * @return
      */
     public boolean isAllowAnonymousJobStatusPermission() {
         return rootACL.isAllowAnonymousJobStatusPermission();
