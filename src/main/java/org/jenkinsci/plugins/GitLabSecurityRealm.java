@@ -284,6 +284,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request, redirectOnFinish)));
         parameters.add(new BasicNameValuePair("response_type", "code"));
         parameters.add(new BasicNameValuePair("client_id", clientID));
+        parameters.add(new BasicNameValuePair("scope", "api"));
 
         return new HttpRedirect(gitlabWebUri + "/oauth/authorize?" + URLEncodedUtils.format(parameters, StandardCharsets.UTF_8));
     }
@@ -504,7 +505,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     /**
      *
      * @param username
-     * @return
      * @throws UsernameNotFoundException
      * @throws DataAccessException
      */
@@ -561,7 +561,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     /**
      *
      * @param groupName
-     * @return
      * @throws UsernameNotFoundException
      * @throws DataAccessException
      */
