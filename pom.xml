@@ -8,7 +8,7 @@
         <relativePath />
     </parent>
     <artifactId>gitlab-oauth</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.7</version>
     <packaging>hpi</packaging>
     <properties>
         <jenkins.version>2.89.2</jenkins.version>
@@ -48,7 +48,7 @@
         <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-      <tag>HEAD</tag>
+      <tag>gitlab-oauth-1.7</tag>
   </scm>
 
 
