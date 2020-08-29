@@ -1,5 +1,9 @@
 
 
+1.8
+-----------------------------------------------------------------------------------
+ - **kwening** : added hudson.model.Item.Discover permission to read permission checks (#25)
+
 1.7
 -----------------------------------------------------------------------------------
  - **Dmitry Erastov** : Include scope in `/oauth/authorize` URL (#26)
