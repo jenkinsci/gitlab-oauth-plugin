@@ -466,7 +466,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         Jenkins jenkins = Jenkins.getInstance();
         assert jenkins != null;
         if (jenkins.hasPermission(Jenkins.READ)) {
-            return super.getPostLogOutUrl(req, auth);
+            // TODO until JEP-227 is merged and core requirement is updated, this will prevent stackoverflow
+            return req.getContextPath() + "/";
         }
         return req.getContextPath() + "/" + GitLabLogoutAction.POST_LOGOUT_URL;
     }
