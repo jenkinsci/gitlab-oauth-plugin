@@ -1,5 +1,9 @@
 
 
+1.9
+-----------------------------------------------------------------------------------
+ - **Wadeck Follonier** : [JEP-227] Prevent Stackoverflow during logout (#27)
+
 1.8
 -----------------------------------------------------------------------------------
  - **kwening** : added hudson.model.Item.Discover permission to read permission checks (#25)
