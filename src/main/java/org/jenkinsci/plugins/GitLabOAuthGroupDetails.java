@@ -31,7 +31,6 @@ public class GitLabOAuthGroupDetails extends GroupDetails {
 
     private final GitlabGroup gitlabGroup;
     static final String ORG_TEAM_SEPARATOR = "*";
-    private String authName;
 
     /**
     * Group based on organization name
@@ -48,37 +47,9 @@ public class GitLabOAuthGroupDetails extends GroupDetails {
     @Override
     public String getName() {
         if (gitlabGroup != null) {
-            return getAuthName();
+            return gitlabGroup.getPath();
         }
         return null;
-    }
-
-    /**
-     * Construct a globally unique identifier for the group
-     *
-     * The uri for the group is simply stripped of its redundant parts:
-     * * The leading protocol scheme (https://)
-     * * The host name
-     * * The first /groups/ part
-     *
-     * This means that in stead of getting the full url:
-     * https://gitlab.example.com/groups/administrators/supersecret
-     *
-     * You'll get a slightly shorter version:
-     * /administrators/supersecret
-     *
-     * @return The shorter, but still unique id of the group
-     */
-    private synchronized String getAuthName() {
-        if (authName == null) {
-            final String webUrl = gitlabGroup.getWebUrl();
-            authName = shortenGroupUri(webUrl);
-        }
-        return authName;
-    }
-
-    static String shortenGroupUri(String webUrl) {
-        return URI.create(webUrl).getPath().replace("/groups", "");
     }
 
     @Override
