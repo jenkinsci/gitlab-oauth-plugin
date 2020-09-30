@@ -302,8 +302,11 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	public GitlabGroup loadOrganization(String organization) {
 		if(StringUtils.isEmpty(organization)) return null;
 		try {
-			if (gitLabAPI != null && isAuthenticated() && !gitLabAPI.getGroups().isEmpty()) {
-				return gitLabAPI.getGroups().stream().filter(group -> group.getName().contains(organization) || organization.contains(group.getName())).findFirst().orElse(null);
+			if (gitLabAPI != null && isAuthenticated()) {
+				List<GitlabGroup> gitLabGroups = gitLabAPI.getGroups();
+				if (!gitLabGroups.isEmpty()) {
+					return gitLabGroups.stream().filter(group -> group.getName().equalsIgnoreCase(organization)).findFirst().orElse(null);
+				}
 			}
 		} catch (IOException e) {
 			LOGGER.log(Level.FINEST, e.getMessage(), e);
