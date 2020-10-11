@@ -1,5 +1,11 @@
 
 
+1.10
+-----------------------------------------------------------------------------------
+ - **Dominic** : Fix org comparison bug (#28)
+ - **Dominic** : Use group path from API (#29)
+ - **Mohamed EL Habib** : add 1.9 changes
+
 1.9
 -----------------------------------------------------------------------------------
  - **Wadeck Follonier** : [JEP-227] Prevent Stackoverflow during logout (#27)
