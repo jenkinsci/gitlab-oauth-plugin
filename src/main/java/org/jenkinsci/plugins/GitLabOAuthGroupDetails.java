@@ -47,7 +47,7 @@ public class GitLabOAuthGroupDetails extends GroupDetails {
     @Override
     public String getName() {
         if (gitlabGroup != null) {
-            return gitlabGroup.getPath();
+            return gitlabGroup.getFullPath();
         }
         return null;
     }

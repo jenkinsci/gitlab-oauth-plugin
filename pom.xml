@@ -64,6 +64,15 @@
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.30</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -73,7 +82,7 @@
         <dependency>
             <groupId>org.gitlab</groupId>
             <artifactId>java-gitlab-api</artifactId>
-            <version>4.0.0</version>
+            <version>4.1.1</version>
         </dependency>
 	<dependency>
             <groupId>org.jenkins-ci</groupId>
