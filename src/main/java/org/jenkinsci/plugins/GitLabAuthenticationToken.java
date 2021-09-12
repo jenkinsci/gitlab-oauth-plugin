@@ -27,20 +27,19 @@ THE SOFTWARE.
 package org.jenkinsci.plugins;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
@@ -79,19 +78,19 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	/**
 	 * Cache for faster organization based security
 	 */
-	private static final Cache<String, Set<String>> userOrganizationCache = CacheBuilder.newBuilder()
+	private static final Cache<String, Set<String>> userOrganizationCache = Caffeine.newBuilder()
 			.expireAfterWrite(1, TimeUnit.HOURS).build();
 
-	private static final Cache<String, Set<String>> repositoryCollaboratorsCache = CacheBuilder.newBuilder()
+	private static final Cache<String, Set<String>> repositoryCollaboratorsCache = Caffeine.newBuilder()
 			.expireAfterWrite(1, TimeUnit.HOURS).build();
 
-	private static final Cache<String, Set<String>> repositoriesByUserCache = CacheBuilder.newBuilder()
+	private static final Cache<String, Set<String>> repositoriesByUserCache = Caffeine.newBuilder()
 			.expireAfterWrite(1, TimeUnit.HOURS).build();
 
-	private static final Cache<String, Boolean> publicRepositoryCache = CacheBuilder.newBuilder()
+	private static final Cache<String, Boolean> publicRepositoryCache = Caffeine.newBuilder()
 			.expireAfterWrite(1, TimeUnit.HOURS).build();
 
-	private static final Cache<String, List<GitlabProject>> groupRepositoriesCache = CacheBuilder.newBuilder()
+	private static final Cache<String, List<GitlabProject>> groupRepositoriesCache = Caffeine.newBuilder()
 			.expireAfterWrite(1, TimeUnit.HOURS).build();
 
 	private final List<GrantedAuthority> authorities = new ArrayList<>();
@@ -190,23 +189,20 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	 * @return whether given candidate belongs to a given organization
 	 */
 	public boolean hasOrganizationPermission(String candidateName, String organization) {
-		try {
-			Set<String> v = userOrganizationCache.get(candidateName, new Callable<Set<String>>() {
-				@Override
-				public Set<String> call() throws Exception {
-					List<GitlabGroup> groups = gitLabAPI.getGroups();
-					Set<String> groupsNames = new HashSet<String>();
-					for (GitlabGroup group : groups) {
-						groupsNames.add(group.getName());
-					}
-					return groupsNames;
+		Set<String> v = userOrganizationCache.get(candidateName, unused -> {
+			try {
+				List<GitlabGroup> groups = gitLabAPI.getGroups();
+				Set<String> groupsNames = new HashSet<String>();
+				for (GitlabGroup group : groups) {
+					groupsNames.add(group.getName());
 				}
-			});
+				return groupsNames;
+			} catch (IOException e) {
+				throw new UncheckedIOException("authorization failed for user = " + candidateName, e);
+			}
+		});
 
-			return v.contains(organization);
-		} catch (ExecutionException e) {
-			throw new RuntimeException("authorization failed for user = " + candidateName, e);
-		}
+		return v != null && v.contains(organization);
 	}
 
 	public boolean hasRepositoryPermission(final String repositoryName) {
@@ -214,18 +210,15 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	}
 
 	public Set<String> myRepositories() {
-		try {
-			Set<String> myRepositories = repositoriesByUserCache.get(getName(), new Callable<Set<String>>() {
-				@Override
-				public Set<String> call() throws Exception {
-					// Get user's projects
-					List<GitlabProject> userRepositoryList = gitLabAPI.getProjects();
-					Set<String> repositoryNames = Collections.emptySet();
-					if (userRepositoryList != null) {
-						repositoryNames = listToNames(userRepositoryList);
-					}
-					// Disable for security reason.
-					// If enabled, even group guest can manage all group jobs.
+		Set<String> myRepositories = repositoriesByUserCache.get(getName(), unused -> {
+			// Get user's projects
+			List<GitlabProject> userRepositoryList = gitLabAPI.getProjects();
+			Set<String> repositoryNames = Collections.emptySet();
+			if (userRepositoryList != null) {
+				repositoryNames = listToNames(userRepositoryList);
+			}
+			// Disable for security reason.
+			// If enabled, even group guest can manage all group jobs.
 //					// Get user's groups
 //					List<GitlabGroup> userGroups = gitLabAPI.getGroups();
 //					if (userGroups != null) {
@@ -237,18 +230,13 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 //							}
 //						}
 //					}
-					return repositoryNames;
-				}
-			});
+			return repositoryNames;
+		});
 
-			return myRepositories;
-		} catch (ExecutionException e) {
-			LOGGER.log(Level.SEVERE, "an exception was thrown", e);
-			throw new RuntimeException("authorization failed for user = " + getName(), e);
-		}
+		return myRepositories;
 	}
 
-	public Set<String> listToNames(Collection<GitlabProject> repositories) throws IOException {
+	public Set<String> listToNames(Collection<GitlabProject> repositories) {
 		Set<String> names = new HashSet<String>();
 		for (GitlabProject repository : repositories) {
 			// String ownerName = repository.getOwner().getUsername();
@@ -261,26 +249,18 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	}
 
 	public boolean isPublicRepository(final String repositoryName) {
-		try {
-			Boolean isPublic = publicRepositoryCache.get(repositoryName, new Callable<Boolean>() {
-				@Override
-				public Boolean call() throws Exception {
-					GitlabProject repository = loadRepository(repositoryName);
-					if (repository == null) {
-						// We don't have access so it must not be public (it
-						// could be non-existant)
-						return Boolean.FALSE;
-					} else {
-						return Boolean.TRUE.equals(repository.isPublic());
-					}
-				}
-			});
+		Boolean isPublic = publicRepositoryCache.get(repositoryName, unused -> {
+			GitlabProject repository = loadRepository(repositoryName);
+			if (repository == null) {
+				// We don't have access so it must not be public (it
+				// could be non-existant)
+				return Boolean.FALSE;
+			} else {
+				return Boolean.TRUE.equals(repository.isPublic());
+			}
+		});
 
-			return isPublic.booleanValue();
-		} catch (ExecutionException e) {
-			LOGGER.log(Level.SEVERE, "an exception was thrown", e);
-			throw new RuntimeException("authorization failed for user = " + getName(), e);
-		}
+		return isPublic != null && isPublic.booleanValue();
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(GitLabAuthenticationToken.class.getName());
@@ -349,18 +329,8 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	}
 
 	public List<GitlabProject> getGroupProjects(final GitlabGroup group) {
-		try {
-			List<GitlabProject> groupProjects = groupRepositoriesCache.get(group.getFullPath(), new Callable<List<GitlabProject>>() {
-				@Override
-				public List<GitlabProject> call() throws Exception {
-					return gitLabAPI.getGroupProjects(group);
-				}
-			});
+		List<GitlabProject> groupProjects = groupRepositoriesCache.get(group.getFullPath(), unused -> gitLabAPI.getGroupProjects(group));
 
-			return groupProjects;
-		} catch (ExecutionException e) {
-			LOGGER.log(Level.SEVERE, "an exception was thrown", e);
-			throw new RuntimeException("authorization failed for user = " + getName(), e);
-		}
+		return groupProjects;
 	}
 }
