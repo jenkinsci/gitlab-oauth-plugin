@@ -3,12 +3,12 @@
 -->
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <f:section title="Gitlab Authorization Settings">
+    <f:section title="GitLab Authorization Settings">
         <f:entry title="Admin User Names"  field="adminUserNames" help="/plugin/gitlab-oauth/help/auth/admin-user-names-help.html" >
             <f:textbox />
         </f:entry>
 
-        <f:entry title="Gitlab Groups for Admin"  field="adminOrganizationNames" help="/plugin/gitlab-oauth/help/auth/admin-organization-names-help.html">
+        <f:entry title="GitLab Groups for Admin"  field="adminOrganizationNames" help="/plugin/gitlab-oauth/help/auth/admin-organization-names-help.html">
             <f:textbox />
         </f:entry>
 
@@ -16,7 +16,7 @@
             <f:textbox />
         </f:entry>
 
-        <f:entry title="Use Gitlab repository permissions" field="useRepositoryPermissions" help="/plugin/gitlab-oauth/help/auth/use-repository-permissions-help.html">
+        <f:entry title="Use GitLab repository permissions" field="useRepositoryPermissions" help="/plugin/gitlab-oauth/help/auth/use-repository-permissions-help.html">
             <f:checkbox />
         </f:entry>
 

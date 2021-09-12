@@ -240,7 +240,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     }
 
     /**
-     * @return the uri to the web root of Gitlab (varies for Gitlab Enterprise
+     * @return the uri to the web root of GitLab (varies for GitLab Enterprise
      *         Edition)
      */
     public String getGitlabWebUri() {
@@ -363,7 +363,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
             }
             SecurityListener.fireAuthenticated(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
         } else {
-            Log.info("Gitlab did not return an access token.");
+            Log.info("GitLab did not return an access token.");
         }
 
         if (StringUtils.isNotBlank(state)) {
@@ -476,7 +476,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
         @Override
         public String getDisplayName() {
-            return "Gitlab Authentication Plugin";
+            return "GitLab Authentication Plugin";
         }
 
         public DescriptorImpl() {

@@ -19,8 +19,8 @@
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-    <name>Gitlab Authentication plugin</name>
-    <description>A Jenkins authentication plugin that delegates to gitlab.  We also implement an Authorization Strategy that users the acquired OAuth token to interact with the Gitlab API to determine a users level of access to Jenkins.</description>
+    <name>GitLab Authentication plugin</name>
+    <description>A Jenkins authentication plugin that delegates to GitLab.  We also implement an Authorization Strategy that users the acquired OAuth token to interact with the GitLab API to determine a users level of access to Jenkins.</description>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
     <licenses>
         <license>

@@ -42,7 +42,7 @@ public class GitLabLogoutAction implements UnprotectedRootAction {
 
     @Override
     public String getDisplayName() {
-        return "Gitlab Logout";
+        return "GitLab Logout";
     }
 
     @Override
