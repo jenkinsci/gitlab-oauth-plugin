@@ -260,7 +260,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 			}
 		});
 
-		return isPublic != null && isPublic.booleanValue();
+		return isPublic != null && isPublic;
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(GitLabAuthenticationToken.class.getName());
