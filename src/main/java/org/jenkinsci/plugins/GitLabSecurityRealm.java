@@ -380,7 +380,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     /**
      * Returns the proxy to be used when connecting to the given URI.
      */
-    private HttpHost getProxy(HttpUriRequest method) throws URIException {
+    private HttpHost getProxy(HttpUriRequest method) {
         Jenkins jenkins = Jenkins.getInstance();
         ProxyConfiguration proxy = jenkins.proxy;
         if (proxy == null) {
