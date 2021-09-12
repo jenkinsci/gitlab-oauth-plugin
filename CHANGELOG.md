@@ -83,7 +83,7 @@
 1.0.5
 -----------------------------------------------------------------------------------
  - **Thorsten** : Change HttpClient configuration to drop usage of methods flagged as @deprecated
- - **Jairo Ricarte** : [JENKINS-36075](https://issues.jenkins.io/browse/JENKINS-36075)Gitlab oauth does not display in Security Realm
+ - **Jairo Ricarte** : [JENKINS-36075](https://issues.jenkins.io/browse/JENKINS-36075)GitLab oauth does not display in Security Realm
 
 1.0.4
 -----------------------------------------------------------------------------------
