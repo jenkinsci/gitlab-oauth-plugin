@@ -108,7 +108,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 
 		this.userName = this.me.getUsername();
 		authorities.add(SecurityRealm.AUTHENTICATED_AUTHORITY);
-		Jenkins jenkins = Jenkins.getInstance();
+		Jenkins jenkins = Jenkins.getInstanceOrNull();
 		if (jenkins != null && jenkins.getSecurityRealm() instanceof GitLabSecurityRealm) {
 			if (myRealm == null) {
 				myRealm = (GitLabSecurityRealm) jenkins.getSecurityRealm();

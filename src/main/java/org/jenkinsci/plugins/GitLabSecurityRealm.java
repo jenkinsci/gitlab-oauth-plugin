@@ -274,10 +274,10 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         String redirectOnFinish;
         if (from != null && Util.isSafeToRedirectTo(from)) {
             redirectOnFinish = from;
-        } else if (referer != null && (referer.startsWith(Jenkins.getInstance().getRootUrl()) || Util.isSafeToRedirectTo(referer))) {
+        } else if (referer != null && (referer.startsWith(Jenkins.get().getRootUrl()) || Util.isSafeToRedirectTo(referer))) {
             redirectOnFinish = referer;
         } else {
-            redirectOnFinish = Jenkins.getInstance().getRootUrl();
+            redirectOnFinish = Jenkins.get().getRootUrl();
         }
 
         List<NameValuePair> parameters = new ArrayList<>();
@@ -290,7 +290,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     }
 
     private String buildRedirectUrl(StaplerRequest request, String referer) throws MalformedURLException {
-        URL currentUrl = new URL(Jenkins.getInstance().getRootUrl());
+        URL currentUrl = new URL(Jenkins.get().getRootUrl());
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("state", referer));
 
@@ -381,7 +381,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
      * Returns the proxy to be used when connecting to the given URI.
      */
     private HttpHost getProxy(HttpUriRequest method) {
-        Jenkins jenkins = Jenkins.getInstance();
+        Jenkins jenkins = Jenkins.get();
         ProxyConfiguration proxy = jenkins.proxy;
         if (proxy == null) {
             return null; // defensive check
@@ -463,8 +463,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     protected String getPostLogOutUrl(StaplerRequest req, Authentication auth) {
         // if we just redirect to the root and anonymous does not have Overall read then we will start a login all over again.
         // we are actually anonymous here as the security context has been cleared
-        Jenkins jenkins = Jenkins.getInstance();
-        assert jenkins != null;
+        Jenkins jenkins = Jenkins.get();
         if (jenkins.hasPermission(Jenkins.READ)) {
             // TODO until JEP-227 is merged and core requirement is updated, this will prevent stackoverflow
             return req.getContextPath() + "/";

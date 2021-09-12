@@ -58,8 +58,7 @@ public class GitLabLogoutAction implements UnprotectedRootAction {
 
     @Restricted(NoExternalUse.class) // jelly only
     public String getGitLabURL() {
-        Jenkins j = Jenkins.getInstance();
-        assert j != null;
+        Jenkins j = Jenkins.get();
         SecurityRealm r = j.getSecurityRealm();
         if (r instanceof GitLabSecurityRealm) {
             GitLabSecurityRealm glsr = (GitLabSecurityRealm) r;
@@ -71,8 +70,7 @@ public class GitLabLogoutAction implements UnprotectedRootAction {
 
     @Restricted(NoExternalUse.class) // jelly only
     public String getGitLabText() {
-        Jenkins jenkins = Jenkins.getInstance();
-        assert jenkins != null;
+        Jenkins jenkins = Jenkins.get();
         SecurityRealm r = jenkins.getSecurityRealm();
         if (r instanceof GitLabSecurityRealm) {
             return "GitLab";
