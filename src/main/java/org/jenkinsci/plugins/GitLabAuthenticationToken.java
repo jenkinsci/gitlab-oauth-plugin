@@ -152,7 +152,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 
 	@Override
 	public GrantedAuthority[] getAuthorities() {
-		return authorities.toArray(new GrantedAuthority[authorities.size()]);
+		return authorities.toArray(new GrantedAuthority[0]);
 	}
 
 	@Override
@@ -323,7 +323,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 			} catch (IOException e) {
 				LOGGER.log(Level.FINE, e.getMessage(), e);
 			}
-			return new GitLabOAuthUserDetails(user, groups.toArray(new GrantedAuthority[groups.size()]));
+			return new GitLabOAuthUserDetails(user, groups.toArray(new GrantedAuthority[0]));
 		}
 		return null;
 	}
