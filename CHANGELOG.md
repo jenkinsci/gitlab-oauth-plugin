@@ -35,22 +35,22 @@
 -----------------------------------------------------------------------------------
  - **Giulio Ruggeri** : Changed redirect url build using jenkins root url (#15)
  - **Bjoern Kasteleiner** : JENKINS-59069 / SECURITY-795: Fix session fixation vulnerability (#16)
- - **Wadeck Follonier** : [SECURITY-796][JENKINS-59069](https://issues.jenkins-ci.org/browse/JENKINS-59069) Open redirect prevention (#17)
+ - **Wadeck Follonier** : [SECURITY-796][JENKINS-59069](https://issues.jenkins.io/browse/JENKINS-59069) Open redirect prevention (#17)
  - **johny.zheng** : Grant STOP Build permissions to all Authenticated Users (#14)
- - **isaacdong** : [JENKINS-52129](https://issues.jenkins-ci.org/browse/JENKINS-52129) 1. bug fixed: repository.isPublic returns null. 2 add 2 git URL patterns without "git@".
+ - **isaacdong** : [JENKINS-52129](https://issues.jenkins.io/browse/JENKINS-52129) 1. bug fixed: repository.isPublic returns null. 2 add 2 git URL patterns without "git@".
 
 1.4
 -----------------------------------------------------------------------------------
- - **Mario Steinitz** : [JENKINS-50838](https://issues.jenkins-ci.org/browse/JENKINS-50838) Change GitLab API support from v3 to v4.
+ - **Mario Steinitz** : [JENKINS-50838](https://issues.jenkins.io/browse/JENKINS-50838) Change GitLab API support from v3 to v4.
 
 1.3
 -----------------------------------------------------------------------------------
- - **Mohamed EL Habib** : [JENKINS-47097](https://issues.jenkins-ci.org/browse/JENKINS-47097) added support to login using gitlab private token
+ - **Mohamed EL Habib** : [JENKINS-47097](https://issues.jenkins.io/browse/JENKINS-47097) added support to login using gitlab private token
 
 1.2
 -----------------------------------------------------------------------------------
- - **Mohamed EL Habib** : [JENKINS-44489](https://issues.jenkins-ci.org/browse/JENKINS-44489) fixed findbug introduced by 987608a commit
- - **Mohamed EL Habib** : [JENKINS-44489](https://issues.jenkins-ci.org/browse/JENKINS-44489) fixed logout when the plugin is configured to allow READ permission for Authenticated, but not Anonymous users.
+ - **Mohamed EL Habib** : [JENKINS-44489](https://issues.jenkins.io/browse/JENKINS-44489) fixed findbug introduced by 987608a commit
+ - **Mohamed EL Habib** : [JENKINS-44489](https://issues.jenkins.io/browse/JENKINS-44489) fixed logout when the plugin is configured to allow READ permission for Authenticated, but not Anonymous users.
  - **Mohamed EL Habib** : add jenkins file to build into ci.jenkins.io
 
 1.1
@@ -63,7 +63,7 @@
 
 1.0.9
 -----------------------------------------------------------------------------------
- - **Jairo Ricarte** : [JENKINS-37741](https://issues.jenkins-ci.org/browse/JENKINS-37741) Testing /project path ont allowGitlabWebHookPermission check
+ - **Jairo Ricarte** : [JENKINS-37741](https://issues.jenkins.io/browse/JENKINS-37741) Testing /project path ont allowGitlabWebHookPermission check
  - **Jairo Ricarte** : added new path for  gitlab-plugin's webhook using anonymous permission
 
 1.0.8
@@ -72,10 +72,10 @@
 
 1.0.7
 -----------------------------------------------------------------------------------
- - **wzxjohn** : [JENKINS-37517](https://issues.jenkins-ci.org/browse/JENKINS-37517) Fix login fails because of a GitLab Api Bug Use v1.2.6 of GitLab Api Client to fix this issue.
- - **wzxjohn** : [JENKINS-37518](https://issues.jenkins-ci.org/browse/JENKINS-37518) Fix api url problem New GitLab Api Client will automatically add api/v3 so we do not need to add api/v3 in config. Maybe this config node can be delete in the future.
+ - **wzxjohn** : [JENKINS-37517](https://issues.jenkins.io/browse/JENKINS-37517) Fix login fails because of a GitLab Api Bug Use v1.2.6 of GitLab Api Client to fix this issue.
+ - **wzxjohn** : [JENKINS-37518](https://issues.jenkins.io/browse/JENKINS-37518) Fix api url problem New GitLab Api Client will automatically add api/v3 so we do not need to add api/v3 in config. Maybe this config node can be delete in the future.
  - **wzxjohn** : Fix ERROR: Failed to load help file: Not Found when click the '?' beside "Grant READ permissions for /gitlab-webhook"
- - **wzxjohn** : [JENKINS-37049](https://issues.jenkins-ci.org/browse/JENKINS-37049) License issue
+ - **wzxjohn** : [JENKINS-37049](https://issues.jenkins.io/browse/JENKINS-37049) License issue
 
 1.0.6
 -----------------------------------------------------------------------------------
@@ -83,7 +83,7 @@
 1.0.5
 -----------------------------------------------------------------------------------
  - **Thorsten** : Change HttpClient configuration to drop usage of methods flagged as @deprecated
- - **Jairo Ricarte** : [JENKINS-36075](https://issues.jenkins-ci.org/browse/JENKINS-36075)GitLab oauth does not display in Security Realm
+ - **Jairo Ricarte** : [JENKINS-36075](https://issues.jenkins.io/browse/JENKINS-36075)GitLab oauth does not display in Security Realm
 
 1.0.4
 -----------------------------------------------------------------------------------

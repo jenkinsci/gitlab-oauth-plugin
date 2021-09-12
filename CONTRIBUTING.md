@@ -47,6 +47,6 @@ validating or debunking potential bug reports.
 * [All issues][issue-all]
 * [Open issues][issue-open]
 
-[issue-all]: https://issues.jenkins-ci.org/issues/?jql=project%20%3D%20JENKINS%20AND%20component%20%3D%20gitlab-oauth-plugin
-[issue-open]: https://issues.jenkins-ci.org/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened)%20AND%20component%20%3D%20gitlab-oauth-plugin
+[issue-all]: https://issues.jenkins.io/issues/?jql=project%20%3D%20JENKINS%20AND%20component%20%3D%20gitlab-oauth-plugin
+[issue-open]: https://issues.jenkins.io/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened)%20AND%20component%20%3D%20gitlab-oauth-plugin
 [pr-open]: https://github.com/jenkinsci/gitlab-oauth-plugin/pulls

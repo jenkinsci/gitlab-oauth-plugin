@@ -7,7 +7,7 @@ newTag="empty"
 skipCommit="Updating develop poms|updating poms|release|CHANGELOG"
 listChanges () {
 	tags=$1
-	git --no-pager log --no-merges --oneline --cherry-pick --date-order --pretty=format:" - **%an** : %s" ${tags} | grep -v -iE "${skipCommit}" | sed 's|\[\(JENKINS-.*\)\]|[\1](https://issues.jenkins-ci.org/browse/\1)|g' >> CHANGELOG.md
+	git --no-pager log --no-merges --oneline --cherry-pick --date-order --pretty=format:" - **%an** : %s" ${tags} | grep -v -iE "${skipCommit}" | sed 's|\[\(JENKINS-.*\)\]|[\1](https://issues.jenkins.io/browse/\1)|g' >> CHANGELOG.md
 }
 
 for tag in ${taglist} ; do 
