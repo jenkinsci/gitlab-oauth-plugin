@@ -207,7 +207,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     
     private boolean currentUriPathStartsWith( String specificPath){
         String requestUri = requestURI();
-        return requestUri==null?false:requestUri.startsWith(specificPath);
+        return requestUri != null && requestUri.startsWith(specificPath);
     }
 
     private boolean currentUriPathEquals( String specificPath ) {
