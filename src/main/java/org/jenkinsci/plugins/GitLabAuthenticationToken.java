@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -101,8 +102,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		this.accessToken = accessToken;
 		this.gitLabAPI = GitlabAPI.connect(gitlabServer, accessToken, tokenType);
 
-		this.me = gitLabAPI.getUser();
-		assert this.me != null;
+		this.me = Objects.requireNonNull(gitLabAPI.getUser());
 
 		setAuthenticated(true);
 
