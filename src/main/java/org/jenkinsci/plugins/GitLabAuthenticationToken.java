@@ -192,7 +192,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		Set<String> v = userOrganizationCache.get(candidateName, unused -> {
 			try {
 				List<GitlabGroup> groups = gitLabAPI.getGroups();
-				Set<String> groupsNames = new HashSet<String>();
+				Set<String> groupsNames = new HashSet<>();
 				for (GitlabGroup group : groups) {
 					groupsNames.add(group.getName());
 				}
@@ -237,7 +237,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	}
 
 	public Set<String> listToNames(Collection<GitlabProject> repositories) {
-		Set<String> names = new HashSet<String>();
+		Set<String> names = new HashSet<>();
 		for (GitlabProject repository : repositories) {
 			// String ownerName = repository.getOwner().getUsername();
 			// String repoName = repository.getName();
@@ -314,7 +314,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		GitlabUser user = loadUser(username);
 		if (user != null) {
 			// FIXME to implement
-			List<GrantedAuthority> groups = new ArrayList<GrantedAuthority>();
+			List<GrantedAuthority> groups = new ArrayList<>();
 			try {
 				List<GitlabGroup> gitLabGroups = gitLabAPI.getGroups();
 				for (GitlabGroup gitlabGroup : gitLabGroups) {

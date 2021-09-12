@@ -314,7 +314,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
         this.allowCcTrayPermission                = allowCcTrayPermission;
         this.allowAnonymousReadPermission         = allowAnonymousReadPermission;
         this.allowAnonymousJobStatusPermission    = allowAnonymousJobStatusPermission;
-        this.adminUserNameList                    = new LinkedList<String>();
+        this.adminUserNameList                    = new LinkedList<>();
 
         String[] parts = adminUserNames.split(",");
 
@@ -322,13 +322,13 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             adminUserNameList.add(part.trim());
         }
 
-        this.adminOrganizationNameList = new LinkedList<String>();
+        this.adminOrganizationNameList = new LinkedList<>();
         parts= adminOrganizationNames.split(",");
         for (String part : parts) {
             this.adminOrganizationNameList.add(part);
         }
 
-        this.organizationNameList = new LinkedList<String>();
+        this.organizationNameList = new LinkedList<>();
 
         parts = organizationNames.split(",");
 

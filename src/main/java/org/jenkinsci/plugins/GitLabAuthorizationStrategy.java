@@ -109,7 +109,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
      */
     @Override
     public Collection<String> getGroups() {
-        return new ArrayList<String>(0);
+        return new ArrayList<>(0);
     }
 
     private Object readResolve() {
