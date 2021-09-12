@@ -27,6 +27,7 @@ THE SOFTWARE.
 package org.jenkinsci.plugins;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -324,9 +325,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
 
         this.adminOrganizationNameList = new LinkedList<>();
         parts= adminOrganizationNames.split(",");
-        for (String part : parts) {
-            this.adminOrganizationNameList.add(part);
-        }
+        this.adminOrganizationNameList.addAll(Arrays.asList(parts));
 
         this.organizationNameList = new LinkedList<>();
 
