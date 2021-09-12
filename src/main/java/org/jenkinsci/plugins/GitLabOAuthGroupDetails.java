@@ -9,8 +9,6 @@ import org.gitlab.api.models.GitlabGroup;
 
 import hudson.security.GroupDetails;
 
-import java.net.URI;
-
 /**
  * Represent a group from Gitlab as a group in Jenkins terms.
  *

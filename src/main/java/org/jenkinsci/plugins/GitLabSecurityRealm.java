@@ -28,9 +28,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import jenkins.security.SecurityListener;
 import org.acegisecurity.Authentication;
@@ -42,8 +40,6 @@ import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UserDetailsService;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.ParameterParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.http.HttpEntity;
@@ -72,7 +68,6 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.converters.ConversionException;
@@ -274,10 +269,10 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         String redirectOnFinish;
         if (from != null && Util.isSafeToRedirectTo(from)) {
             redirectOnFinish = from;
-        } else if (referer != null && (referer.startsWith(Jenkins.getInstance().getRootUrl()) || Util.isSafeToRedirectTo(referer))) {
+        } else if (referer != null && (referer.startsWith(Jenkins.get().getRootUrl()) || Util.isSafeToRedirectTo(referer))) {
             redirectOnFinish = referer;
         } else {
-            redirectOnFinish = Jenkins.getInstance().getRootUrl();
+            redirectOnFinish = Jenkins.get().getRootUrl();
         }
 
         List<NameValuePair> parameters = new ArrayList<>();
@@ -290,8 +285,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     }
 
     private String buildRedirectUrl(StaplerRequest request, String referer) throws MalformedURLException {
-        URL currentUrl = new URL(Jenkins.getInstance().getRootUrl());
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        URL currentUrl = new URL(Jenkins.get().getRootUrl());
+        List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("state", referer));
 
         URL redirect_uri = new URL(currentUrl.getProtocol(), currentUrl.getHost(), currentUrl.getPort(),
@@ -314,7 +309,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         String state = request.getParameter("state");
 
         HttpPost httpPost = new HttpPost(gitlabWebUri + "/oauth/token");
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("client_id", clientID));
         parameters.add(new BasicNameValuePair("client_secret", clientSecret));
         parameters.add(new BasicNameValuePair("code", code));
@@ -380,8 +375,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     /**
      * Returns the proxy to be used when connecting to the given URI.
      */
-    private HttpHost getProxy(HttpUriRequest method) throws URIException {
-        Jenkins jenkins = Jenkins.getInstance();
+    private HttpHost getProxy(HttpUriRequest method) {
+        Jenkins jenkins = Jenkins.get();
         ProxyConfiguration proxy = jenkins.proxy;
         if (proxy == null) {
             return null; // defensive check
@@ -463,8 +458,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     protected String getPostLogOutUrl(StaplerRequest req, Authentication auth) {
         // if we just redirect to the root and anonymous does not have Overall read then we will start a login all over again.
         // we are actually anonymous here as the security context has been cleared
-        Jenkins jenkins = Jenkins.getInstance();
-        assert jenkins != null;
+        Jenkins jenkins = Jenkins.get();
         if (jenkins.hasPermission(Jenkins.READ)) {
             // TODO until JEP-227 is merged and core requirement is updated, this will prevent stackoverflow
             return req.getContextPath() + "/";

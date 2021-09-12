@@ -27,6 +27,7 @@ THE SOFTWARE.
 package org.jenkinsci.plugins;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -207,12 +208,12 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     
     private boolean currentUriPathStartsWith( String specificPath){
         String requestUri = requestURI();
-        return requestUri==null?false:requestUri.startsWith(specificPath);
+        return requestUri != null && requestUri.startsWith(specificPath);
     }
 
     private boolean currentUriPathEquals( String specificPath ) {
         String requestUri = requestURI();
-        Jenkins jenkins = Jenkins.getInstance();
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins != null && requestUri != null) {
 			String basePath = URI.create(jenkins.getRootUrl()).getPath();
             return URI.create(requestUri).getPath().equals(basePath + specificPath);
@@ -314,7 +315,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
         this.allowCcTrayPermission                = allowCcTrayPermission;
         this.allowAnonymousReadPermission         = allowAnonymousReadPermission;
         this.allowAnonymousJobStatusPermission    = allowAnonymousJobStatusPermission;
-        this.adminUserNameList                    = new LinkedList<String>();
+        this.adminUserNameList                    = new LinkedList<>();
 
         String[] parts = adminUserNames.split(",");
 
@@ -322,13 +323,11 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             adminUserNameList.add(part.trim());
         }
 
-        this.adminOrganizationNameList = new LinkedList<String>();
+        this.adminOrganizationNameList = new LinkedList<>();
         parts= adminOrganizationNames.split(",");
-        for (String part : parts) {
-            this.adminOrganizationNameList.add(part);
-        }
+        this.adminOrganizationNameList.addAll(Arrays.asList(parts));
 
-        this.organizationNameList = new LinkedList<String>();
+        this.organizationNameList = new LinkedList<>();
 
         parts = organizationNames.split(",");
 

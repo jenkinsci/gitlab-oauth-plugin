@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -101,14 +102,13 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		this.accessToken = accessToken;
 		this.gitLabAPI = GitlabAPI.connect(gitlabServer, accessToken, tokenType);
 
-		this.me = gitLabAPI.getUser();
-		assert this.me != null;
+		this.me = Objects.requireNonNull(gitLabAPI.getUser());
 
 		setAuthenticated(true);
 
 		this.userName = this.me.getUsername();
 		authorities.add(SecurityRealm.AUTHENTICATED_AUTHORITY);
-		Jenkins jenkins = Jenkins.getInstance();
+		Jenkins jenkins = Jenkins.getInstanceOrNull();
 		if (jenkins != null && jenkins.getSecurityRealm() instanceof GitLabSecurityRealm) {
 			if (myRealm == null) {
 				myRealm = (GitLabSecurityRealm) jenkins.getSecurityRealm();
@@ -152,7 +152,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 
 	@Override
 	public GrantedAuthority[] getAuthorities() {
-		return authorities.toArray(new GrantedAuthority[authorities.size()]);
+		return authorities.toArray(new GrantedAuthority[0]);
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		Set<String> v = userOrganizationCache.get(candidateName, unused -> {
 			try {
 				List<GitlabGroup> groups = gitLabAPI.getGroups();
-				Set<String> groupsNames = new HashSet<String>();
+				Set<String> groupsNames = new HashSet<>();
 				for (GitlabGroup group : groups) {
 					groupsNames.add(group.getName());
 				}
@@ -237,7 +237,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 	}
 
 	public Set<String> listToNames(Collection<GitlabProject> repositories) {
-		Set<String> names = new HashSet<String>();
+		Set<String> names = new HashSet<>();
 		for (GitlabProject repository : repositories) {
 			// String ownerName = repository.getOwner().getUsername();
 			// String repoName = repository.getName();
@@ -260,7 +260,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 			}
 		});
 
-		return isPublic != null && isPublic.booleanValue();
+		return isPublic != null && isPublic;
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(GitLabAuthenticationToken.class.getName());
@@ -314,7 +314,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 		GitlabUser user = loadUser(username);
 		if (user != null) {
 			// FIXME to implement
-			List<GrantedAuthority> groups = new ArrayList<GrantedAuthority>();
+			List<GrantedAuthority> groups = new ArrayList<>();
 			try {
 				List<GitlabGroup> gitLabGroups = gitLabAPI.getGroups();
 				for (GitlabGroup gitlabGroup : gitLabGroups) {
@@ -323,7 +323,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 			} catch (IOException e) {
 				LOGGER.log(Level.FINE, e.getMessage(), e);
 			}
-			return new GitLabOAuthUserDetails(user, groups.toArray(new GrantedAuthority[groups.size()]));
+			return new GitLabOAuthUserDetails(user, groups.toArray(new GrantedAuthority[0]));
 		}
 		return null;
 	}
