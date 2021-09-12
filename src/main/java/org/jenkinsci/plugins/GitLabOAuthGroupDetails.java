@@ -10,12 +10,12 @@ import org.gitlab.api.models.GitlabGroup;
 import hudson.security.GroupDetails;
 
 /**
- * Represent a group from Gitlab as a group in Jenkins terms.
+ * Represent a group from GitLab as a group in Jenkins terms.
  *
  * The surprising bits here are that:
- * * Gitlab groups exist in a hierarchy while jenkins groups are just a flat namespace
+ * * GitLab groups exist in a hierarchy while jenkins groups are just a flat namespace
  * * Jenkins groups live in the same namespace as user names
- * * Gitlab users can easily be granted the privilege to create new groups and if the name
+ * * GitLab users can easily be granted the privilege to create new groups and if the name
  *   of the gitlab group is allowed to become the name of the jenkins group, then a relatively
  *   low-privilege user in gitlab can create a group that clashes with privileged users and groups
  *   in jenkins and elevate jenkins privileges that way.
@@ -52,7 +52,7 @@ public class GitLabOAuthGroupDetails extends GroupDetails {
 
     @Override
     public String getDisplayName() {
-        return "Gitlab "+ gitlabGroup.getName()+" ("+getName()+")";
+        return "GitLab "+ gitlabGroup.getName()+" ("+getName()+")";
     }
 
     @Override
