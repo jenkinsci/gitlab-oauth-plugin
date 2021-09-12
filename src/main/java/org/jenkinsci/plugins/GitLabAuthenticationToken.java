@@ -350,7 +350,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
 
 	public List<GitlabProject> getGroupProjects(final GitlabGroup group) {
 		try {
-			List<GitlabProject> groupProjects = groupRepositoriesCache.get(group.getPath(), new Callable<List<GitlabProject>>() {
+			List<GitlabProject> groupProjects = groupRepositoriesCache.get(group.getFullPath(), new Callable<List<GitlabProject>>() {
 				@Override
 				public List<GitlabProject> call() throws Exception {
 					return gitLabAPI.getGroupProjects(group);
