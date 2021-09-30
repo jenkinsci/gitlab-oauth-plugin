@@ -233,7 +233,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
 
         @Override
 		public String getDisplayName() {
-            return "GitLab Commiter Authorization Strategy";
+            return "GitLab Committer Authorization Strategy";
         }
 
         @Override
