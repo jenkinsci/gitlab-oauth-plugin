@@ -109,11 +109,13 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     private ArrayList<String> listFromCsvString(String input) {
         ArrayList<String> list = new ArrayList<String>();
 
-        for (String part : input.split(",")) {
-            String trimmed = part.trim();
+        if (input != null) {
+            for (String part : input.split(",")) {
+                String trimmed = part.trim();
 
-            if (!trimmed.isEmpty()) {
-                list.add(trimmed);
+                if (!trimmed.isEmpty()) {
+                    list.add(trimmed);
+                }
             }
         }
 
