@@ -197,16 +197,16 @@ public class GitLabRootACL extends ACL {
                 return false;
             }
 
+            if (this.adminUserNameList.contains(userName)) {
+                log.finest("Granting Admin rights to user " + userName);
+                return true;
+            }
+
             for (String orgName : this.adminOrganizationNameList) {
                 if (token.hasOrganizationPermission(userName, orgName)) {
                     log.finest("Granting Admin rights to user " + userName + " a member of " + orgName);
                     return true;
                 }
-            }
-
-            if (this.adminUserNameList.contains(userName)) {
-                log.finest("Granting Admin rights to user " + userName);
-                return true;
             }
 
             if (this.authenticatedUserReadPermission && this.isReadPermission(permission)) {
