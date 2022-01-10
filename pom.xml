@@ -8,10 +8,10 @@
         <relativePath />
     </parent>
     <artifactId>gitlab-oauth</artifactId>
-    <version>1.13</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <properties>
-        <revision>1.13</revision>
+        <revision>1.14</revision>
         <changelist>-SNAPSHOT</changelist>
         <jenkins.version>2.249.1</jenkins.version>
         <java.level>8</java.level>
@@ -46,7 +46,7 @@
         <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
         <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
         <url>https://github.com/${gitHubRepo}</url>
-        <tag>gitlab-oauth-1.13</tag>
+        <tag>${scmTag}</tag>
     </scm>
 
 
