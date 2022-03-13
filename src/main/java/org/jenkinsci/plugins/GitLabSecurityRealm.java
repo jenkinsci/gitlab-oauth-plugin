@@ -274,9 +274,10 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         } else {
             redirectOnFinish = Jenkins.get().getRootUrl();
         }
+        request.getSession().setAttribute(REFERER_ATTRIBUTE, redirectOnFinish);
 
         List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request, redirectOnFinish)));
+        parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request)));
         parameters.add(new BasicNameValuePair("response_type", "code"));
         parameters.add(new BasicNameValuePair("client_id", clientID));
         parameters.add(new BasicNameValuePair("scope", "api"));
@@ -284,10 +285,9 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         return new HttpRedirect(gitlabWebUri + "/oauth/authorize?" + URLEncodedUtils.format(parameters, StandardCharsets.UTF_8));
     }
 
-    private String buildRedirectUrl(StaplerRequest request, String referer) throws MalformedURLException {
+    private String buildRedirectUrl(StaplerRequest request) throws MalformedURLException {
         URL currentUrl = new URL(Jenkins.get().getRootUrl());
         List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair("state", referer));
 
         URL redirect_uri = new URL(currentUrl.getProtocol(), currentUrl.getHost(), currentUrl.getPort(),
                 request.getContextPath() + "/securityRealm/finishLogin?" + URLEncodedUtils.format(parameters, StandardCharsets.UTF_8));
@@ -305,16 +305,14 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
             Log.info("doFinishLogin: missing code or private_token.");
             return HttpResponses.redirectToContextRoot();
         }
-
-        String state = request.getParameter("state");
-
+        String referer = (String)request.getSession().getAttribute(REFERER_ATTRIBUTE);
         HttpPost httpPost = new HttpPost(gitlabWebUri + "/oauth/token");
         List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("client_id", clientID));
         parameters.add(new BasicNameValuePair("client_secret", clientSecret));
         parameters.add(new BasicNameValuePair("code", code));
         parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
-        parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request, state)));
+        parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request)));
         httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -366,8 +364,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
             Log.info("GitLab did not return an access token.");
         }
 
-        if (StringUtils.isNotBlank(state)) {
-            return HttpResponses.redirectTo(state);
+        if (StringUtils.isNotBlank(referer)) {
+            return HttpResponses.redirectTo(referer);
         }
         return HttpResponses.redirectToContextRoot();
     }
