@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import hudson.util.Secret;
 import jenkins.security.SecurityListener;
 import org.acegisecurity.Authentication;
 import org.acegisecurity.AuthenticationException;
@@ -59,6 +60,7 @@ import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabUser;
 import org.jfree.util.Log;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.Header;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
@@ -103,7 +105,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     private String gitlabWebUri;
     private String gitlabApiUri;
     private String clientID;
-    private String clientSecret;
+    private Secret clientSecret;
 
     /**
      * @param gitlabWebUri
@@ -116,6 +118,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
      *            The client ID for the created OAuth Application.
      * @param clientSecret
      *            The client secret for the created GitLab OAuth Application.
+     *            Should be encrypted value of a {@link hudson.util.Secret},
+     *            for compatibility also plain text values are accepted.
      */
     @DataBoundConstructor
     public GitLabSecurityRealm(String gitlabWebUri, String gitlabApiUri, String clientID, String clientSecret) {
@@ -124,7 +128,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         this.gitlabWebUri = Util.fixEmptyAndTrim(gitlabWebUri);
         this.gitlabApiUri = Util.fixEmptyAndTrim(gitlabApiUri);
         this.clientID = Util.fixEmptyAndTrim(clientID);
-        this.clientSecret = Util.fixEmptyAndTrim(clientSecret);
+        setClientSecret(Util.fixEmptyAndTrim(clientSecret));
     }
 
     private GitLabSecurityRealm() {
@@ -152,7 +156,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
      *            the clientSecret to set
      */
     private void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
+        this.clientSecret = Secret.fromString(clientSecret);
     }
 
     /**
@@ -195,7 +199,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
             writer.endNode();
 
             writer.startNode("clientSecret");
-            writer.setValue(realm.getClientSecret());
+            writer.setValue(realm.clientSecret.getEncryptedValue());
             writer.endNode();
         }
 
@@ -254,13 +258,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         return clientID;
     }
 
-    /**
-     * @return the clientSecret
-     */
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
     // "from" is coming from SecurityRealm/loginLink.jelly
     public HttpResponse doCommenceLogin(StaplerRequest request, @QueryParameter String from, @Header("Referer") final String referer) throws IOException {
         // 2. Requesting authorization :
@@ -305,11 +302,15 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
             Log.info("doFinishLogin: missing code or private_token.");
             return HttpResponses.redirectToContextRoot();
         }
+        if (clientSecret == null) {
+            Log.info("doFinishLogin: missing client secret.");
+            return HttpResponses.redirectToContextRoot();
+        }
         String referer = (String)request.getSession().getAttribute(REFERER_ATTRIBUTE);
         HttpPost httpPost = new HttpPost(gitlabWebUri + "/oauth/token");
         List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("client_id", clientID));
-        parameters.add(new BasicNameValuePair("client_secret", clientSecret));
+        parameters.add(new BasicNameValuePair("client_secret", clientSecret.getPlainText()));
         parameters.add(new BasicNameValuePair("code", code));
         parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
         parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request)));
@@ -540,7 +541,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         if (object instanceof GitLabSecurityRealm) {
             GitLabSecurityRealm obj = (GitLabSecurityRealm) object;
             return this.getGitlabWebUri().equals(obj.getGitlabWebUri()) && this.getGitlabApiUri().equals(obj.getGitlabApiUri()) && this.getClientID().equals(obj.getClientID())
-                    && this.getClientSecret().equals(obj.getClientSecret());
+                    && this.clientSecret.equals(obj.clientSecret);
         } else {
             return false;
         }
