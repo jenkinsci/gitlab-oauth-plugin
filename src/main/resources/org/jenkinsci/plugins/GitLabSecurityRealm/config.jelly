@@ -17,7 +17,7 @@
         </f:entry>
 
         <f:entry title="Client Secret" field="clientSecret" help="/plugin/gitlab-oauth/help/realm/client-secret-help.html">
-            <f:textbox />
+            <f:password />
         </f:entry>
 
     </f:section>
