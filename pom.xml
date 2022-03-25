@@ -8,7 +8,7 @@
         <relativePath />
     </parent>
     <artifactId>gitlab-oauth</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>1.14</version>
     <packaging>hpi</packaging>
     <properties>
         <revision>1.14</revision>
@@ -46,7 +46,7 @@
         <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
         <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
         <url>https://github.com/${gitHubRepo}</url>
-        <tag>${scmTag}</tag>
+        <tag>gitlab-oauth-1.14</tag>
     </scm>
 
 
