@@ -28,7 +28,6 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import hudson.util.Secret;
@@ -61,7 +60,6 @@ import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabUser;
 import org.jfree.util.Log;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.Header;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
