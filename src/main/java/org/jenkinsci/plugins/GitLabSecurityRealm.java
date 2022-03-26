@@ -28,6 +28,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import hudson.util.Secret;
@@ -256,6 +257,14 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
      */
     public String getClientID() {
         return clientID;
+    }
+
+    /**
+     * Used by jelly
+     * @return the client secret
+     */
+    public Secret getClientSecret() {
+        return clientSecret;
     }
 
     // "from" is coming from SecurityRealm/loginLink.jelly
