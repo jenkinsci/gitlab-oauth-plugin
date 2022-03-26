@@ -60,7 +60,6 @@ import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabUser;
 import org.jfree.util.Log;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.Header;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
@@ -256,6 +255,14 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
      */
     public String getClientID() {
         return clientID;
+    }
+
+    /**
+     * Used by jelly
+     * @return the client secret
+     */
+    public Secret getClientSecret() {
+        return clientSecret;
     }
 
     // "from" is coming from SecurityRealm/loginLink.jelly
