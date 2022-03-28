@@ -5,3 +5,6 @@ work
 .settings
 *.iml
 .idea
+*.swp
+*.swo
+/Session.vim
