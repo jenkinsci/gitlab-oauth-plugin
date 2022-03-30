@@ -24,17 +24,9 @@ THE SOFTWARE.
 
 
  */
+
 package org.jenkinsci.plugins;
 
-import java.net.URI;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.acegisecurity.Authentication;
-import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
 
 import hudson.model.AbstractProject;
 import hudson.model.Item;
@@ -43,7 +35,15 @@ import hudson.plugins.git.UserRemoteConfig;
 import hudson.scm.SCM;
 import hudson.security.ACL;
 import hudson.security.Permission;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 import jenkins.model.Jenkins;
+import org.acegisecurity.Authentication;
+import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * @author Mike
@@ -77,8 +77,8 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     public boolean hasPermission(Authentication a, Permission permission) {
         if (a != null && a instanceof GitLabAuthenticationToken) {
             if (!a.isAuthenticated()) {
-				return false;
-			}
+                return false;
+            }
 
             GitLabAuthenticationToken authenticationToken = (GitLabAuthenticationToken) a;
 
@@ -89,7 +89,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                 log.finest("Granting Admin rights to user " + candidateName);
                 return true;
             }
-            if(this.adminOrganizationNameList != null) {
+            if (this.adminOrganizationNameList != null) {
                 for (String adminOrganizationName : this.adminOrganizationNameList) {
                     if (authenticationToken.hasOrganizationPermission(candidateName, adminOrganizationName)) {
                         log.finest("Granting Admin rights to user " +
@@ -100,7 +100,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             }
             if (this.project != null) {
                 if (useRepositoryPermissions) {
-                    if(hasRepositoryPermission(authenticationToken, permission)) {
+                    if (hasRepositoryPermission(authenticationToken, permission)) {
                         log.finest("Granting Authenticated User " + permission.getId() +
                             " permission on project " + project.getName() +
                             "to user " + candidateName);
@@ -160,7 +160,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
                 return true;
             }
             if (authenticatedUserName.equals("anonymous")) {
-                if(checkJobStatusPermission(permission) && allowAnonymousJobStatusPermission) {
+                if (checkJobStatusPermission(permission) && allowAnonymousJobStatusPermission) {
                     return true;
                 }
                 if (checkReadPermission(permission)) {
@@ -205,17 +205,17 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             return false;
         }
     }
-    
-    private boolean currentUriPathStartsWith( String specificPath){
+
+    private boolean currentUriPathStartsWith(String specificPath) {
         String requestUri = requestURI();
         return requestUri != null && requestUri.startsWith(specificPath);
     }
 
-    private boolean currentUriPathEquals( String specificPath ) {
+    private boolean currentUriPathEquals(String specificPath) {
         String requestUri = requestURI();
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins != null && requestUri != null) {
-			String basePath = URI.create(jenkins.getRootUrl()).getPath();
+            String basePath = URI.create(jenkins.getRootUrl()).getPath();
             return URI.create(requestUri).getPath().equals(basePath + specificPath);
         } else {
             return false;
@@ -279,7 +279,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
         String repositoryName = null;
         SCM scm = this.project.getScm();
         if (scm instanceof GitSCM) {
-            GitSCM git = (GitSCM)scm;
+            GitSCM git = (GitSCM) scm;
             List<UserRemoteConfig> userRemoteConfigs = git.getUserRemoteConfigs();
             if (!userRemoteConfigs.isEmpty()) {
                 String repoUrl = userRemoteConfigs.get(0).getUrl();
@@ -305,7 +305,6 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             boolean allowCcTrayPermission,
             boolean allowAnonymousReadPermission,
             boolean allowAnonymousJobStatusPermission) {
-        super();
 
         this.authenticatedUserReadPermission      = authenticatedUserReadPermission;
         this.useRepositoryPermissions             = useRepositoryPermissions;
@@ -324,7 +323,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
         }
 
         this.adminOrganizationNameList = new LinkedList<>();
-        parts= adminOrganizationNames.split(",");
+        parts = adminOrganizationNames.split(",");
         this.adminOrganizationNameList.addAll(Arrays.asList(parts));
 
         this.organizationNameList = new LinkedList<>();
@@ -350,7 +349,6 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
             boolean allowAnonymousReadPermission,
             boolean allowAnonymousJobStatusPermission,
             AbstractProject project) {
-        super();
 
         this.adminUserNameList                    = adminUserNameList;
         this.adminOrganizationNameList            = adminOrganizationNameList;

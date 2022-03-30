@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 
  */
+
 package org.jenkinsci.plugins;
 
 import java.util.logging.Level;
@@ -42,7 +43,7 @@ import java.util.regex.Pattern;
 public class GitlabRepositoryName {
 
     private static final Pattern[] URL_PATTERNS = {
-        /**
+        /*
          * The first set of patterns extract the host, owner and repository names
          * from URLs that include a '.git' suffix, removing the suffix from the
          * repository name.
@@ -54,7 +55,7 @@ public class GitlabRepositoryName {
         Pattern.compile("git://([^/]+)/([^/]+)/([^/]+)\\.git"),
         Pattern.compile("ssh://git@([^/]+)/([^/]+)/([^/]+)\\.git"),
         Pattern.compile("ssh://([^/]+)/([^/]+)/([^/]+)\\.git"),
-        /**
+        /*
          * The second set of patterns extract the host, owner and repository names
          * from all other URLs. Note that these patterns must be processed *after*
          * the first set, to avoid any '.git' suffix that may be present being included
@@ -64,7 +65,7 @@ public class GitlabRepositoryName {
         Pattern.compile("https?://[^/]+@([^/]+)/([^/]+)/([^/]+)/?"),
         Pattern.compile("https?://([^/]+)/([^/]+)/([^/]+)/?"),
         Pattern.compile("git://([^/]+)/([^/]+)/([^/]+)/?"),
-        Pattern.compile("ssh://git@([^/]+)/([^/]+)/([^/]+)/?")
+        Pattern.compile("ssh://git@([^/]+)/([^/]+)/([^/]+)/?"),
     };
 
     /**
@@ -101,7 +102,7 @@ public class GitlabRepositoryName {
 
     @Override
     public String toString() {
-        return "GitLabRepository[host="+host+",username="+userName+",repository="+repositoryName+"]";
+        return "GitLabRepository[host=" + host + ",username=" + userName + ",repository=" + repositoryName + "]";
     }
 
     private static final Logger LOGGER = Logger.getLogger(GitlabRepositoryName.class.getName());
