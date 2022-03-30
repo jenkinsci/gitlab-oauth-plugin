@@ -1,13 +1,13 @@
 /**
  *
  */
+
 package org.jenkinsci.plugins;
 
+import hudson.security.GroupDetails;
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.gitlab.api.models.GitlabGroup;
-
-import hudson.security.GroupDetails;
 
 /**
  * Represent a group from GitLab as a group in Jenkins terms.
@@ -35,7 +35,6 @@ public class GitLabOAuthGroupDetails extends GroupDetails {
     * @param gitlabGroup
     */
     public GitLabOAuthGroupDetails(GitlabGroup gitlabGroup) {
-        super();
         this.gitlabGroup = gitlabGroup;
     }
 
@@ -52,7 +51,7 @@ public class GitLabOAuthGroupDetails extends GroupDetails {
 
     @Override
     public String getDisplayName() {
-        return "GitLab "+ gitlabGroup.getName()+" ("+getName()+")";
+        return "GitLab " + gitlabGroup.getName() + " (" + getName() + ")";
     }
 
     @Override

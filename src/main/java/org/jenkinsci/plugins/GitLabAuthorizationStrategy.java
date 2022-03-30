@@ -24,14 +24,8 @@ THE SOFTWARE.
 
 
  */
+
 package org.jenkinsci.plugins;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.kohsuke.stapler.DataBoundConstructor;
 
 import hudson.Extension;
 import hudson.model.AbstractProject;
@@ -39,6 +33,11 @@ import hudson.model.Descriptor;
 import hudson.model.Job;
 import hudson.security.ACL;
 import hudson.security.AuthorizationStrategy;
+import java.util.ArrayList;
+import java.util.Collection;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * @author mocleiri
@@ -64,7 +63,6 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
             boolean allowCcTrayPermission,
             boolean allowAnonymousReadPermission,
             boolean allowAnonymousJobStatusPermission) {
-        super();
 
         rootACL = new GitLabRequireOrganizationMembershipACL(adminUserNames,
                 adminOrganizationNames,
@@ -92,9 +90,9 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
     }
 
     @Override
-	public ACL getACL(Job<?,?> job) {
-        if(job instanceof AbstractProject) {
-            AbstractProject project = (AbstractProject)job;
+    public ACL getACL(Job<?, ?> job) {
+        if (job instanceof AbstractProject) {
+            AbstractProject project = (AbstractProject) job;
             GitLabRequireOrganizationMembershipACL gitlabACL = (GitLabRequireOrganizationMembershipACL) getRootACL();
             return gitlabACL.cloneForProject(project);
         } else {
@@ -203,8 +201,8 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
      * @return true if the objects are the same instance and configuration.
      */
     @Override
-    public boolean equals(Object object){
-        if(object instanceof GitLabAuthorizationStrategy) {
+    public boolean equals(Object object) {
+        if (object instanceof GitLabAuthorizationStrategy) {
             GitLabAuthorizationStrategy obj = (GitLabAuthorizationStrategy) object;
             return this.getOrganizationNames().equals(obj.getOrganizationNames()) &&
                 this.getAdminOrganizationNames().equals(obj.getAdminOrganizationNames()) &&
@@ -224,7 +222,7 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
 
     @Override
     public int hashCode() {
-    	return HashCodeBuilder.reflectionHashCode(this, false);
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 
     @Extension
@@ -232,12 +230,12 @@ public class GitLabAuthorizationStrategy extends AuthorizationStrategy {
             Descriptor<AuthorizationStrategy> {
 
         @Override
-		public String getDisplayName() {
+        public String getDisplayName() {
             return "GitLab Committer Authorization Strategy";
         }
 
         @Override
-		public String getHelpFile() {
+        public String getHelpFile() {
             return "/plugin/gitlab-oauth/help/help-authorization-strategy.html";
         }
     }

@@ -30,6 +30,7 @@ THE SOFTWARE.
 
 
  */
+
 package org.jenkinsci.plugins;
 
 import org.acegisecurity.AuthenticationException;
@@ -41,11 +42,11 @@ import org.acegisecurity.AuthenticationException;
 public class GitLabAuthenticationException extends AuthenticationException {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -4047568830613474074L;
+     *
+     */
+    private static final long serialVersionUID = -4047568830613474074L;
 
-	/**
+    /**
      * Standard constructor
      * @param msg   The error message for the Exception
      * @param t     The Throwable to send along

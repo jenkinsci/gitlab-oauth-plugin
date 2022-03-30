@@ -21,16 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package org.jenkinsci.plugins;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.xstream.converters.ConversionException;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import hudson.Extension;
+import hudson.ProxyConfiguration;
+import hudson.Util;
+import hudson.model.Descriptor;
+import hudson.model.User;
+import hudson.security.GroupDetails;
+import hudson.security.SecurityRealm;
+import hudson.security.UserMayOrMayNotExistException;
+import hudson.tasks.Mailer;
+import hudson.util.Secret;
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import hudson.util.Secret;
+import javax.servlet.http.HttpSession;
+import jenkins.model.Jenkins;
 import jenkins.security.SecurityListener;
 import org.acegisecurity.Authentication;
 import org.acegisecurity.AuthenticationException;
@@ -69,27 +91,6 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thoughtworks.xstream.converters.ConversionException;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-
-import hudson.Extension;
-import hudson.ProxyConfiguration;
-import hudson.Util;
-import hudson.model.Descriptor;
-import hudson.model.User;
-import hudson.security.GroupDetails;
-import hudson.security.SecurityRealm;
-import hudson.security.UserMayOrMayNotExistException;
-import hudson.tasks.Mailer;
-import jenkins.model.Jenkins;
-
-import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -122,8 +123,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
      */
     @DataBoundConstructor
     public GitLabSecurityRealm(String gitlabWebUri, String gitlabApiUri, String clientID, String clientSecret) {
-        super();
-
         this.gitlabWebUri = Util.fixEmptyAndTrim(gitlabWebUri);
         this.gitlabApiUri = Util.fixEmptyAndTrim(gitlabApiUri);
         this.clientID = Util.fixEmptyAndTrim(clientID);
@@ -313,7 +312,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
             Log.info("doFinishLogin: missing client secret.");
             return HttpResponses.redirectToContextRoot();
         }
-        String referer = (String)request.getSession().getAttribute(REFERER_ATTRIBUTE);
+        String referer = (String) request.getSession().getAttribute(REFERER_ATTRIBUTE);
         HttpPost httpPost = new HttpPost(gitlabWebUri + "/oauth/token");
         List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("client_id", clientID));
@@ -486,7 +485,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         }
 
         public DescriptorImpl() {
-            super();
+            // default constructor
         }
 
         public DescriptorImpl(Class<? extends SecurityRealm> clazz) {

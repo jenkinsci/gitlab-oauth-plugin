@@ -1,6 +1,7 @@
 /**
  *
  */
+
 package org.jenkinsci.plugins;
 
 import org.acegisecurity.GrantedAuthority;
@@ -14,13 +15,13 @@ import org.gitlab.api.models.GitlabUser;
  */
 public class GitLabOAuthUserDetails extends User implements UserDetails {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1709511212188366292L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1709511212188366292L;
 
-	public GitLabOAuthUserDetails(GitlabUser user, GrantedAuthority[] authorities) {
-		super(user.getUsername(), "", true, true, true, true, authorities);
-	}
+    public GitLabOAuthUserDetails(GitlabUser user, GrantedAuthority[] authorities) {
+        super(user.getUsername(), "", true, true, true, true, authorities);
+    }
 
 }
