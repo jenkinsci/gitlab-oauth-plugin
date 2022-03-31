@@ -10,3 +10,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # Starting with version 10.0, this library requires Java 11
+      - dependency-name: "com.puppycrawl.tools:checkstyle"
+        versions: [">=10.0"]
