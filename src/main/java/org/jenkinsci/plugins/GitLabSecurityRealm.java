@@ -77,9 +77,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.gitlab.api.TokenType;
-import org.gitlab.api.models.GitlabGroup;
-import org.gitlab.api.models.GitlabUser;
+import org.gitlab4j.api.Constants.TokenType;
+import org.gitlab4j.api.GitLabApiException;
+import org.gitlab4j.api.models.Group;
 import org.jfree.util.Log;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.Header;
@@ -345,8 +345,9 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         String accessToken = extractToken(content);
 
         if (StringUtils.isNotBlank(accessToken)) {
+          try {
             // only set the access token if it exists.
-            GitLabAuthenticationToken auth = new GitLabAuthenticationToken(accessToken, getGitlabApiUri(), TokenType.ACCESS_TOKEN);
+            GitLabAuthenticationToken auth = new GitLabAuthenticationToken(accessToken, getGitlabApiUri(), TokenType.ACCESS);
 
             HttpSession session = request.getSession(false);
             if (session != null) {
@@ -357,7 +358,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-            GitlabUser self = auth.getMyself();
+            org.gitlab4j.api.models.User self = auth.getMyself();
             User user = User.current();
             if (user != null) {
                 user.setFullName(self.getName());
@@ -367,6 +368,9 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
                 }
             }
             SecurityListener.fireAuthenticated(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
+          } catch (GitLabApiException e) {
+            throw new RuntimeException(e);
+          }
         } else {
             Log.info("GitLab did not return an access token.");
         }
@@ -437,10 +441,10 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
                 if (authentication instanceof UsernamePasswordAuthenticationToken) {
                     try {
                         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-                        GitLabAuthenticationToken gitlab = new GitLabAuthenticationToken(token.getCredentials().toString(), getGitlabApiUri(), TokenType.PRIVATE_TOKEN);
+                        GitLabAuthenticationToken gitlab = new GitLabAuthenticationToken(token.getCredentials().toString(), getGitlabApiUri(), TokenType.PRIVATE);
                         SecurityContextHolder.getContext().setAuthentication(gitlab);
                         return gitlab;
-                    } catch (IOException e) {
+                    } catch (GitLabApiException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -524,7 +528,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
             }
 
             // Check the username is not an homonym of an organization
-            GitlabGroup ghOrg = authToken.loadOrganization(username);
+            Group ghOrg = authToken.loadOrganization(username);
             if (ghOrg != null) {
                 throw new UsernameNotFoundException("user(" + username + ") is also an organization");
             }
@@ -573,7 +577,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
             throw new UsernameNotFoundException("No known group: " + groupName);
         }
 
-        GitlabGroup gitlabGroup = authToken.loadOrganization(groupName);
+        Group gitlabGroup = authToken.loadOrganization(groupName);
         return new GitLabOAuthGroupDetails(gitlabGroup);
 
     }
