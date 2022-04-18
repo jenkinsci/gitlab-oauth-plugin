@@ -7,7 +7,7 @@ package org.jenkinsci.plugins;
 import hudson.security.GroupDetails;
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
-import org.gitlab.api.models.GitlabGroup;
+import org.gitlab4j.api.models.Group;
 
 /**
  * Represent a group from GitLab as a group in Jenkins terms.
@@ -27,14 +27,14 @@ import org.gitlab.api.models.GitlabGroup;
  */
 public class GitLabOAuthGroupDetails extends GroupDetails {
 
-    private final GitlabGroup gitlabGroup;
+    private final Group gitlabGroup;
     static final String ORG_TEAM_SEPARATOR = "*";
 
     /**
     * Group based on organization name
     * @param gitlabGroup
     */
-    public GitLabOAuthGroupDetails(GitlabGroup gitlabGroup) {
+    public GitLabOAuthGroupDetails(Group gitlabGroup) {
         this.gitlabGroup = gitlabGroup;
     }
 
