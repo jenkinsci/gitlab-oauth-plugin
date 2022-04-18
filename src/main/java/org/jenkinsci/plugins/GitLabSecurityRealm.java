@@ -347,7 +347,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         if (StringUtils.isNotBlank(accessToken)) {
           try {
             // only set the access token if it exists.
-            GitLabAuthenticationToken auth = new GitLabAuthenticationToken(accessToken, getGitlabApiUri(), TokenType.ACCESS);
+            GitLabAuthenticationToken auth = new GitLabAuthenticationToken(accessToken, getGitlabApiUri(), TokenType.OAUTH2_ACCESS);
 
             HttpSession session = request.getSession(false);
             if (session != null) {
