@@ -5,7 +5,7 @@ updates:
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     ignore:
       # Starting with version 10.0, this library requires Java 11
       - dependency-name: "com.puppycrawl.tools:checkstyle"
@@ -13,4 +13,4 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
