@@ -26,6 +26,7 @@ package org.jenkinsci.plugins;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -220,7 +221,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         }
 
         private void setValue(GitLabSecurityRealm realm, String node, String value) {
-            switch (node) {
+            switch (node.toLowerCase()) {
                 case "gitlabWebUri":
                     realm.setGitlabWebUri(value);
                     break;
@@ -234,7 +235,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
                     realm.setClientSecret(value);
                     break;
                 default:
-                    break;
+                throw new ConversionException("Invalid node value = " + node);
             }
         }
 

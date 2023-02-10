@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<FindBugsFilter>
+  <!--
+    Exclusions in this section have been triaged and determined to be
+    false positives.
+  -->
+
+  <!--
+    Here lies technical debt. Exclusions in this section have not yet
+    been triaged. When working on this section, pick an exclusion to
+    triage, then:
+
+    - Add a @SuppressFBWarnings(value = "[...]", justification = "[...]")
+      annotation if it is a false positive.  Indicate the reason why
+      it is a false positive, then remove the exclusion from this
+      section.
+
+    - If it is not a false positive, fix the bug, then remove the
+      exclusion from this section.
+   -->
+  <Match>
+    <Or>
+      <And>
+        <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+        <Class name="org.jenkinsci.plugins.GitLabAuthenticationToken.gitLabAPI"/>
+      </And>
+      <And>
+        <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+        <Class name="org.jenkinsci.plugins.GitLabAuthenticationToken.me"/>
+      </And>
+      <And>
+      <Bug pattern="DM_CONVERT_CASE"/>
+      <Class name="org.jenkinsci.plugins.GitLabSecurityRealm$ConverterImpl.setValue"/>
+      </And>
+      
+    </Or>
+  </Match>
+</FindBugsFilter>

@@ -72,12 +72,6 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
     private final transient User me;
     private transient GitLabSecurityRealm myRealm = null;
 
-
-
-
-
-
-
     /**
      * Cache for faster organization based security
      */
