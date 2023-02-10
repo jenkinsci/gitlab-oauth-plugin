@@ -105,7 +105,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <!-- Version specified in parent POM -->
+                <version>3.2.1</version>
                 <configuration>
                     <consoleOutput>true</consoleOutput>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
