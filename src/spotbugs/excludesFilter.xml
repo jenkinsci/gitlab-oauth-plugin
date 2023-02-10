@@ -19,20 +19,18 @@
       exclusion from this section.
    -->
   <Match>
-    <Or>
-      <And>
-        <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
-        <Class name="org.jenkinsci.plugins.GitLabAuthenticationToken.gitLabAPI"/>
-      </And>
-      <And>
-        <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
-        <Class name="org.jenkinsci.plugins.GitLabAuthenticationToken.me"/>
-      </And>
-      <And>
-      <Bug pattern="DM_CONVERT_CASE"/>
-      <Class name="org.jenkinsci.plugins.GitLabSecurityRealm$ConverterImpl.setValue"/>
-      </And>
-      
-    </Or>
+    <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+    <Class name="org.jenkinsci.plugins.GitLabAuthenticationToken"/>
+    <Field name="gitLabAPI"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+    <Class name="org.jenkinsci.plugins.GitLabAuthenticationToken"/>
+    <Field name="me"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_CONVERT_CASE"/>
+    <Class name="org.jenkinsci.plugins.GitLabSecurityRealm$ConverterImpl"/>
+    <Method name="setValue"/>
   </Match>
 </FindBugsFilter>
