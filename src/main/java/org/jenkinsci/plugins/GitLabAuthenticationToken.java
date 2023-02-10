@@ -107,7 +107,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins != null && jenkins.getSecurityRealm() instanceof GitLabSecurityRealm) {
 
-                myRealm = (GitLabSecurityRealm) jenkins.getSecurityRealm();
+            myRealm = (GitLabSecurityRealm) jenkins.getSecurityRealm();
 
             // Search for scopes that allow fetching team membership. This is
             // documented online.
