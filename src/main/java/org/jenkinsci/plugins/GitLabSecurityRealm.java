@@ -222,23 +222,22 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
         private void setValue(GitLabSecurityRealm realm, String node, String value) {
             switch (node.toLowerCase()) {
-                case "gitlabWebUri":
-                    realm.setGitlabWebUri(value);
-                    break;
-                case "gitlabApiUri":
-                    realm.setGitlabApiUri(value);
-                    break;
-                case "clientID":
+                case "clientid":
                     realm.setClientID(value);
                     break;
-                case "clientSecret":
+                case "clientsecret":
                     realm.setClientSecret(value);
                     break;
+                case "gitlabweburi":
+                    realm.setGitlabWebUri(value);
+                    break;
+                case "gitlabapiuri":
+                    realm.setGitlabApiUri(value);
+                    break;
                 default:
-                throw new ConversionException("Invalid node value = " + node);
+                    throw new ConversionException("Invalid node value = " + node);
             }
         }
-
 
     }
 
