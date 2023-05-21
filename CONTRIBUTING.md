@@ -44,9 +44,11 @@ before merging a pull request.
 Filing new issues and commenting on existing issues is a great help for
 validating or debunking potential bug reports.
 
-* [All issues][issue-all]
-* [Open issues][issue-open]
+* [All issues][issues-github]
+* [All issues - legacy][issues-all]
+* [Open issues - legacy][issues-open]
 
-[issue-all]: https://issues.jenkins.io/issues/?jql=project%20%3D%20JENKINS%20AND%20component%20%3D%20gitlab-oauth-plugin
-[issue-open]: https://issues.jenkins.io/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened)%20AND%20component%20%3D%20gitlab-oauth-plugin
+[issues-github]: https://github.com/jenkinsci/gitlab-oauth-plugin/issues
+[issues-all]: https://issues.jenkins.io/issues/?jql=project%20%3D%20JENKINS%20AND%20component%20%3D%20gitlab-oauth-plugin
+[issues-open]: https://issues.jenkins.io/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened)%20AND%20component%20%3D%20gitlab-oauth-plugin
 [pr-open]: https://github.com/jenkinsci/gitlab-oauth-plugin/pulls
