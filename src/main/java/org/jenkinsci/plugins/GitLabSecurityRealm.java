@@ -24,6 +24,8 @@
 
 package org.jenkinsci.plugins;
 
+import static java.util.UUID.randomUUID;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.converters.ConversionException;
@@ -47,7 +49,9 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -91,17 +95,15 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 
-
 /**
  *
  * Implementation of the AbstractPasswordBasedSecurityRealm that uses gitlab
  * oauth to verify the user can login.
  *
- * This is based on the GitLabbSecurityRealm from the gitlab-auth-plugin written
+ * This is based on the GitLabSecurityRealm from the gitlab-auth-plugin written
  * by Alex Ackerman.
  */
 public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsService {
-
     private String gitlabWebUri;
     private String gitlabApiUri;
     private String clientID;
@@ -129,8 +131,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         setClientSecret(Util.fixEmptyAndTrim(clientSecret));
     }
 
-    private GitLabSecurityRealm() {
-    }
+    private GitLabSecurityRealm() {}
 
     /**
      * @param gitlabWebUri
@@ -238,7 +239,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
                     throw new ConversionException("Invalid node value = " + node);
             }
         }
-
     }
 
     /**
@@ -265,33 +265,46 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     }
 
     // "from" is coming from SecurityRealm/loginLink.jelly
-    public HttpResponse doCommenceLogin(StaplerRequest request, @QueryParameter String from, @Header("Referer") final String referer) throws IOException {
+    public HttpResponse doCommenceLogin(
+            StaplerRequest request, @QueryParameter String from, @Header("Referer") final String referer)
+            throws IOException {
         // 2. Requesting authorization :
         // http://doc.gitlab.com/ce/api/oauth2.html
 
         String redirectOnFinish;
+
+        // Setting a value for the state parameter
+        final String state = randomUUID().toString();
+
         if (from != null && Util.isSafeToRedirectTo(from)) {
             redirectOnFinish = from;
-        } else if (referer != null && (referer.startsWith(Jenkins.get().getRootUrl()) || Util.isSafeToRedirectTo(referer))) {
+        } else if (referer != null
+                && (referer.startsWith(Jenkins.get().getRootUrl()) || Util.isSafeToRedirectTo(referer))) {
             redirectOnFinish = referer;
         } else {
             redirectOnFinish = Jenkins.get().getRootUrl();
         }
         request.getSession().setAttribute(REFERER_ATTRIBUTE, redirectOnFinish);
+        request.getSession().setAttribute(STATE_ATTRIBUTE, state);
 
         List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request)));
         parameters.add(new BasicNameValuePair("response_type", "code"));
         parameters.add(new BasicNameValuePair("client_id", clientID));
         parameters.add(new BasicNameValuePair("scope", "api"));
+        parameters.add(new BasicNameValuePair("state", state));
 
-        return new HttpRedirect(gitlabWebUri + "/oauth/authorize?" + URLEncodedUtils.format(parameters, StandardCharsets.UTF_8));
+        return new HttpRedirect(
+                gitlabWebUri + "/oauth/authorize?" + URLEncodedUtils.format(parameters, StandardCharsets.UTF_8));
     }
 
     private String buildRedirectUrl(StaplerRequest request) throws MalformedURLException {
         URL currentUrl = new URL(Jenkins.get().getRootUrl());
 
-        URL redirect_uri = new URL(currentUrl.getProtocol(), currentUrl.getHost(), currentUrl.getPort(),
+        URL redirect_uri = new URL(
+                currentUrl.getProtocol(),
+                currentUrl.getHost(),
+                currentUrl.getPort(),
                 request.getContextPath() + "/securityRealm/finishLogin");
         return redirect_uri.toString();
     }
@@ -302,11 +315,26 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
      */
     public HttpResponse doFinishLogin(StaplerRequest request) throws IOException {
         String code = request.getParameter("code");
+        String state = request.getParameter(STATE_ATTRIBUTE);
+        String expectedState = (String) request.getSession().getAttribute(STATE_ATTRIBUTE);
 
         if (StringUtils.isBlank(code)) {
             Log.info("doFinishLogin: missing code or private_token.");
             return HttpResponses.redirectToContextRoot();
         }
+
+        if (state == null) {
+            LOGGER.info("doFinishLogin: missing state parameter from GitLab response.");
+            return HttpResponses.redirectToContextRoot();
+        } else if (expectedState == null) {
+            LOGGER.info("doFinishLogin: missing state parameter from user's session.");
+            return HttpResponses.redirectToContextRoot();
+        } else if (!MessageDigest.isEqual(state.getBytes(Charset.forName("UTF-8")), expectedState.getBytes(Charset.forName("UTF-8")))) {
+            LOGGER.info(
+                    "state parameter value [" + state + "] does not match the expected one [" + expectedState + "].");
+            return HttpResponses.redirectToContextRoot();
+        }
+
         if (clientSecret == null) {
             Log.info("doFinishLogin: missing client secret.");
             return HttpResponses.redirectToContextRoot();
@@ -324,9 +352,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpHost proxy = getProxy(httpPost);
         if (proxy != null) {
-            RequestConfig config = RequestConfig.custom()
-                    .setProxy(proxy)
-                    .build();
+            RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
             httpPost.setConfig(config);
         }
 
@@ -338,38 +364,40 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
         // When HttpClient instance is no longer needed,
         // shut down the connection manager to ensure
-        // immediate deallocation of all system resources
+        // immediate de-allocation of all system resources
         httpclient.close();
 
         String accessToken = extractToken(content);
 
         if (StringUtils.isNotBlank(accessToken)) {
-          try {
-            // only set the access token if it exists.
-            GitLabAuthenticationToken auth = new GitLabAuthenticationToken(accessToken, getGitlabApiUri(), TokenType.OAUTH2_ACCESS);
+            try {
+                // only set the access token if it exists.
+                GitLabAuthenticationToken auth =
+                        new GitLabAuthenticationToken(accessToken, getGitlabApiUri(), TokenType.OAUTH2_ACCESS);
 
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                // avoid session fixation
-                session.invalidate();
-            }
-            request.getSession(true);
-
-            SecurityContextHolder.getContext().setAuthentication(auth);
-
-            org.gitlab4j.api.models.User self = auth.getMyself();
-            User user = User.current();
-            if (user != null) {
-                user.setFullName(self.getName());
-                // Set email from gitlab only if empty
-                if (!user.getProperty(Mailer.UserProperty.class).hasExplicitlyConfiguredAddress()) {
-                    user.addProperty(new Mailer.UserProperty(auth.getMyself().getEmail()));
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    // avoid session fixation
+                    session.invalidate();
                 }
+                request.getSession(true);
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
+
+                org.gitlab4j.api.models.User self = auth.getMyself();
+                User user = User.current();
+                if (user != null) {
+                    user.setFullName(self.getName());
+                    // Set email from gitlab only if empty
+                    if (!user.getProperty(Mailer.UserProperty.class).hasExplicitlyConfiguredAddress()) {
+                        user.addProperty(
+                                new Mailer.UserProperty(auth.getMyself().getEmail()));
+                    }
+                }
+                SecurityListener.fireAuthenticated(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
+            } catch (GitLabApiException e) {
+                throw new RuntimeException(e);
             }
-            SecurityListener.fireAuthenticated(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
-          } catch (GitLabApiException e) {
-            throw new RuntimeException(e);
-          }
         } else {
             Log.info("GitLab did not return an access token.");
         }
@@ -418,6 +446,11 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         return null;
     }
 
+    /**
+     * To store the state parameter in the user's session.
+     */
+    private static final String STATE_ATTRIBUTE = "state";
+
     /*
      * (non-Javadoc)
      *
@@ -430,31 +463,36 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
     @Override
     public SecurityComponents createSecurityComponents() {
-        return new SecurityComponents(new AuthenticationManager() {
+        return new SecurityComponents(
+                new AuthenticationManager() {
 
-            @Override
-            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-                if (authentication instanceof GitLabAuthenticationToken) {
-                    return authentication;
-                }
-                if (authentication instanceof UsernamePasswordAuthenticationToken) {
-                    try {
-                        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-                        GitLabAuthenticationToken gitlab = new GitLabAuthenticationToken(token.getCredentials().toString(), getGitlabApiUri(), TokenType.PRIVATE);
-                        SecurityContextHolder.getContext().setAuthentication(gitlab);
-                        return gitlab;
-                    } catch (GitLabApiException e) {
-                        throw new RuntimeException(e);
+                    @Override
+                    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+                        if (authentication instanceof GitLabAuthenticationToken) {
+                            return authentication;
+                        }
+                        if (authentication instanceof UsernamePasswordAuthenticationToken) {
+                            try {
+                                UsernamePasswordAuthenticationToken token =
+                                        (UsernamePasswordAuthenticationToken) authentication;
+                                GitLabAuthenticationToken gitlab = new GitLabAuthenticationToken(
+                                        token.getCredentials().toString(), getGitlabApiUri(), TokenType.PRIVATE);
+                                SecurityContextHolder.getContext().setAuthentication(gitlab);
+                                return gitlab;
+                            } catch (GitLabApiException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        throw new BadCredentialsException("Unexpected authentication type: " + authentication);
                     }
-                }
-                throw new BadCredentialsException("Unexpected authentication type: " + authentication);
-            }
-        }, new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
-                return GitLabSecurityRealm.this.loadUserByUsername(username);
-            }
-        });
+                },
+                new UserDetailsService() {
+                    @Override
+                    public UserDetails loadUserByUsername(String username)
+                            throws UsernameNotFoundException, DataAccessException {
+                        return GitLabSecurityRealm.this.loadUserByUsername(username);
+                    }
+                });
     }
 
     @Override
@@ -464,7 +502,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
     @Override
     protected String getPostLogOutUrl(StaplerRequest req, Authentication auth) {
-        // if we just redirect to the root and anonymous does not have Overall read then we will start a login all over again.
+        // if we just redirect to the root and anonymous does not have Overall read then we will start a login all over
+        // again.
         // we are actually anonymous here as the security context has been cleared
         Jenkins jenkins = Jenkins.get();
         if (jenkins.hasPermission(Jenkins.READ)) {
@@ -494,7 +533,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
         public DescriptorImpl(Class<? extends SecurityRealm> clazz) {
             super(clazz);
         }
-
     }
 
     // Overridden for better type safety.
@@ -506,7 +544,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     }
 
     /**
-     *
      * @param username
      * @throws UsernameNotFoundException
      * @throws DataAccessException
@@ -515,7 +552,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
         GitLabAuthenticationToken authToken;
         if (SecurityContextHolder.getContext().getAuthentication() instanceof GitLabAuthenticationToken) {
-            authToken = (GitLabAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            authToken = (GitLabAuthenticationToken)
+                    SecurityContextHolder.getContext().getAuthentication();
         } else {
             throw new UserMayOrMayNotExistException("Could not get auth token.");
         }
@@ -549,7 +587,9 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     public boolean equals(Object object) {
         if (object instanceof GitLabSecurityRealm) {
             GitLabSecurityRealm obj = (GitLabSecurityRealm) object;
-            return this.getGitlabWebUri().equals(obj.getGitlabWebUri()) && this.getGitlabApiUri().equals(obj.getGitlabApiUri()) && this.getClientID().equals(obj.getClientID())
+            return this.getGitlabWebUri().equals(obj.getGitlabWebUri())
+                    && this.getGitlabApiUri().equals(obj.getGitlabApiUri())
+                    && this.getClientID().equals(obj.getClientID())
                     && this.clientSecret.equals(obj.clientSecret);
         } else {
             return false;
@@ -562,7 +602,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     }
 
     /**
-     *
      * @param groupName
      * @throws UsernameNotFoundException
      * @throws DataAccessException
@@ -570,7 +609,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     @Override
     public GroupDetails loadGroupByGroupname(String groupName) throws UsernameNotFoundException, DataAccessException {
 
-        GitLabAuthenticationToken authToken = (GitLabAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        GitLabAuthenticationToken authToken =
+                (GitLabAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
         if (authToken == null) {
             throw new UsernameNotFoundException("No known group: " + groupName);
@@ -578,7 +618,6 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
         Group gitlabGroup = authToken.loadOrganization(groupName);
         return new GitLabOAuthGroupDetails(gitlabGroup);
-
     }
 
     /**
