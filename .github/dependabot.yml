@@ -6,10 +6,6 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-    ignore:
-      # Starting with version 10.0, this library requires Java 11
-      - dependency-name: "com.puppycrawl.tools:checkstyle"
-        versions: [">=10.0"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
