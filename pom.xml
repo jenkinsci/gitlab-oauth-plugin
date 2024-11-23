@@ -13,7 +13,8 @@
     <properties>
         <revision>1.20</revision>
         <changelist>-SNAPSHOT</changelist>
-        <jenkins.version>2.452.4</jenkins.version>
+        <jenkins.baseline>2.452</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.4</jenkins.version>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.threshold>Low</spotbugs.threshold>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
@@ -67,8 +68,8 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.387.x</artifactId>
-                <version>2543.vfb_1a_5fb_9496d</version>
+                <artifactId>bom-${jenkins.baseline}.x</artifactId>
+                <version>3613.v584fca_12cf5c</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
