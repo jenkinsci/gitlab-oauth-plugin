@@ -41,9 +41,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import jenkins.model.Jenkins;
-import org.acegisecurity.Authentication;
 import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.springframework.security.core.Authentication;
 
 /**
  * @author Mike
@@ -70,11 +70,11 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     /*
      * (non-Javadoc)
      *
-     * @see hudson.security.ACL#hasPermission(org.acegisecurity.Authentication,
+     * @see hudson.security.ACL#hasPermission(org.springframework.security.core.Authentication,
      * hudson.security.Permission)
      */
     @Override
-    public boolean hasPermission(Authentication a, Permission permission) {
+    public boolean hasPermission2(Authentication a, Permission permission) {
         if (a != null && a instanceof GitLabAuthenticationToken) {
             if (!a.isAuthenticated()) {
                 return false;
@@ -154,7 +154,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
         } else {
             String authenticatedUserName = a.getName();
 
-            if (authenticatedUserName.equals(SYSTEM.getPrincipal())) {
+            if (authenticatedUserName.equals(SYSTEM2.getPrincipal())) {
                 // give system user full access
                 log.finest("Granting Full rights to SYSTEM user.");
                 return true;
@@ -223,7 +223,7 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
     }
 
     private String requestURI() {
-        StaplerRequest currentRequest = Stapler.getCurrentRequest();
+        StaplerRequest2 currentRequest = Stapler.getCurrentRequest2();
         return (currentRequest == null) ? null : currentRequest.getOriginalRequestURI();
     }
 

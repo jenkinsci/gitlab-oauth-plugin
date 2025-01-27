@@ -41,9 +41,10 @@ import hudson.model.Descriptor;
 import hudson.model.User;
 import hudson.security.GroupDetails;
 import hudson.security.SecurityRealm;
-import hudson.security.UserMayOrMayNotExistException;
+import hudson.security.UserMayOrMayNotExistException2;
 import hudson.tasks.Mailer;
 import hudson.util.Secret;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -55,18 +56,8 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.servlet.http.HttpSession;
 import jenkins.model.Jenkins;
 import jenkins.security.SecurityListener;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationException;
-import org.acegisecurity.AuthenticationManager;
-import org.acegisecurity.BadCredentialsException;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
-import org.acegisecurity.userdetails.UserDetails;
-import org.acegisecurity.userdetails.UserDetailsService;
-import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.http.HttpEntity;
@@ -91,9 +82,17 @@ import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataRetrievalFailureException;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  *
@@ -103,7 +102,7 @@ import org.springframework.dao.DataRetrievalFailureException;
  * This is based on the GitLabSecurityRealm from the gitlab-auth-plugin written
  * by Alex Ackerman.
  */
-public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsService {
+public class GitLabSecurityRealm extends SecurityRealm {
     private String gitlabWebUri;
     private String gitlabApiUri;
     private String clientID;
@@ -266,7 +265,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
     // "from" is coming from SecurityRealm/loginLink.jelly
     public HttpResponse doCommenceLogin(
-            StaplerRequest request, @QueryParameter String from, @Header("Referer") final String referer)
+            StaplerRequest2 request, @QueryParameter String from, @Header("Referer") final String referer)
             throws IOException {
         // 2. Requesting authorization :
         // http://doc.gitlab.com/ce/api/oauth2.html
@@ -298,7 +297,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
                 gitlabWebUri + "/oauth/authorize?" + URLEncodedUtils.format(parameters, StandardCharsets.UTF_8));
     }
 
-    private String buildRedirectUrl(StaplerRequest request) throws MalformedURLException {
+    private String buildRedirectUrl(StaplerRequest2 request) throws MalformedURLException {
         URL currentUrl = new URL(Jenkins.get().getRootUrl());
 
         URL redirect_uri = new URL(
@@ -313,7 +312,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
      * This is where the user comes back to at the end of the OpenID redirect
      * ping-pong.
      */
-    public HttpResponse doFinishLogin(StaplerRequest request) throws IOException {
+    public HttpResponse doFinishLogin(StaplerRequest2 request) throws IOException {
         String code = request.getParameter("code");
         String state = request.getParameter(STATE_ATTRIBUTE);
         String expectedState = (String) request.getSession().getAttribute(STATE_ATTRIBUTE);
@@ -394,7 +393,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
                                 new Mailer.UserProperty(auth.getMyself().getEmail()));
                     }
                 }
-                SecurityListener.fireAuthenticated(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
+                SecurityListener.fireAuthenticated2(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
             } catch (GitLabApiException e) {
                 throw new RuntimeException(e);
             }
@@ -489,8 +488,8 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
                 new UserDetailsService() {
                     @Override
                     public UserDetails loadUserByUsername(String username)
-                            throws UsernameNotFoundException, DataAccessException {
-                        return GitLabSecurityRealm.this.loadUserByUsername(username);
+                            throws UsernameNotFoundException {
+                        return GitLabSecurityRealm.this.loadUserByUsername2(username);
                     }
                 });
     }
@@ -501,7 +500,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     }
 
     @Override
-    protected String getPostLogOutUrl(StaplerRequest req, Authentication auth) {
+    protected String getPostLogOutUrl2(StaplerRequest2 req, Authentication auth) {
         // if we just redirect to the root and anonymous does not have Overall read then we will start a login all over
         // again.
         // we are actually anonymous here as the security context has been cleared
@@ -546,16 +545,15 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     /**
      * @param username
      * @throws UsernameNotFoundException
-     * @throws DataAccessException
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
+    public UserDetails loadUserByUsername2(String username) throws UsernameNotFoundException {
         GitLabAuthenticationToken authToken;
         if (SecurityContextHolder.getContext().getAuthentication() instanceof GitLabAuthenticationToken) {
             authToken = (GitLabAuthenticationToken)
                     SecurityContextHolder.getContext().getAuthentication();
         } else {
-            throw new UserMayOrMayNotExistException("Could not get auth token.");
+            throw new UserMayOrMayNotExistException2("Could not get auth token.");
         }
 
         try {
@@ -572,7 +570,7 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
 
             return userDetails;
         } catch (Error e) {
-            throw new DataRetrievalFailureException("loadUserByUsername (username=" + username + ")", e);
+            throw new AuthenticationServiceException("loadUserByUsername (username=" + username + ")", e);
         }
     }
 
@@ -604,10 +602,9 @@ public class GitLabSecurityRealm extends SecurityRealm implements UserDetailsSer
     /**
      * @param groupName
      * @throws UsernameNotFoundException
-     * @throws DataAccessException
      */
     @Override
-    public GroupDetails loadGroupByGroupname(String groupName) throws UsernameNotFoundException, DataAccessException {
+    public GroupDetails loadGroupByGroupname2(String groupName, boolean fetchMembers) throws UsernameNotFoundException {
 
         GitLabAuthenticationToken authToken =
                 (GitLabAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
