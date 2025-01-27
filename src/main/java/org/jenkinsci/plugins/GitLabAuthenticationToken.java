@@ -41,9 +41,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jenkins.model.Jenkins;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
-import org.acegisecurity.providers.AbstractAuthenticationToken;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.gitlab4j.api.Constants.TokenType;
@@ -52,6 +49,9 @@ import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Group;
 import org.gitlab4j.api.models.Project;
 import org.gitlab4j.api.models.User;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  * @author mocleiri
@@ -93,7 +93,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
     private final List<GrantedAuthority> authorities = new ArrayList<>();
 
     public GitLabAuthenticationToken(String accessToken, String gitlabServer, TokenType tokenType) throws GitLabApiException {
-        super(new GrantedAuthority[] {});
+        super(List.of());
 
         this.accessToken = accessToken;
         this.gitLabAPI = new GitLabApi(gitlabServer, tokenType, accessToken);
@@ -103,7 +103,7 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(true);
 
         this.userName = this.me.getUsername();
-        authorities.add(SecurityRealm.AUTHENTICATED_AUTHORITY);
+        authorities.add(SecurityRealm.AUTHENTICATED_AUTHORITY2);
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins != null && jenkins.getSecurityRealm() instanceof GitLabSecurityRealm) {
 
@@ -147,8 +147,8 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public GrantedAuthority[] getAuthorities() {
-        return authorities.toArray(new GrantedAuthority[0]);
+    public Collection<GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
@@ -318,12 +318,12 @@ public class GitLabAuthenticationToken extends AbstractAuthenticationToken {
             try {
                 List<Group> gitLabGroups = gitLabAPI.getGroupApi().getGroups();
                 for (Group gitlabGroup : gitLabGroups) {
-                    groups.add(new GrantedAuthorityImpl(gitlabGroup.getName()));
+                    groups.add(new SimpleGrantedAuthority(gitlabGroup.getName()));
                 }
             } catch (GitLabApiException e) {
                 LOGGER.log(Level.FINE, e.getMessage(), e);
             }
-            return new GitLabOAuthUserDetails(user, groups.toArray(new GrantedAuthority[0]));
+            return new GitLabOAuthUserDetails(user, groups);
         }
         return null;
     }

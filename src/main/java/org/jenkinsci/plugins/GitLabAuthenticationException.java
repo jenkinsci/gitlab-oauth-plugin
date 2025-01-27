@@ -33,7 +33,7 @@ THE SOFTWARE.
 
 package org.jenkinsci.plugins;
 
-import org.acegisecurity.AuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 
 /**
  *

@@ -5,9 +5,9 @@
 package org.jenkinsci.plugins;
 
 import hudson.security.GroupDetails;
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
 import org.gitlab4j.api.models.Group;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  * Represent a group from GitLab as a group in Jenkins terms.
@@ -60,6 +60,6 @@ public class GitLabOAuthGroupDetails extends GroupDetails {
     }
 
     public GrantedAuthority getAuth() {
-        return new GrantedAuthorityImpl(getName());
+        return new SimpleGrantedAuthority(getName());
     }
 }
