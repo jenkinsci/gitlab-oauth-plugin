@@ -55,6 +55,10 @@
             <id>repo.jenkins-ci.org</id>
             <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
+        <repository>
+            <id>incrementals</id>
+            <url>https://repo.jenkins-ci.org/incrementals/</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -89,6 +93,12 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>gitlab-api</artifactId>
+            <version>6.1.0-106.v6c0b_5b_df4ee6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jenkins.plugins</groupId>
+            <artifactId>jakarta-xml-bind-api</artifactId>
+            <version>4.0.5-3.v3d5b_a_73965b_9</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -97,6 +107,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>jackson2-api</artifactId>
+            <version>2.20.0-417.va_5311a_823a_b_8</version>
         </dependency>
     </dependencies>
     <build>
@@ -275,6 +286,14 @@
                         <phase>validate</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
