@@ -8,10 +8,10 @@
         <relativePath />
     </parent>
     <artifactId>gitlab-oauth</artifactId>
-    <version>1.23</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <properties>
-        <revision>1.23</revision>
+        <revision>1.24</revision>
         <changelist>-SNAPSHOT</changelist>
         <jenkins.baseline>2.492</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
