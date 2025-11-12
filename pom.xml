@@ -75,6 +75,12 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+            <!-- TODO https://github.com/jenkinsci/gitlab-api-plugin/pull/121/ -->
+            <dependency>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>gitlab-api</artifactId>
+                <version>6.2.0-129.v770352b_103a_6</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -93,8 +99,6 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>gitlab-api</artifactId>
-            <!-- TODO: Remove when available in BOM -->
-            <version>6.1.0-124.v711d0eda_59a_8</version>
         </dependency>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
