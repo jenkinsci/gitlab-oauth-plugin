@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>5.26</version>
+        <version>5.28</version>
         <relativePath />
     </parent>
     <artifactId>gitlab-oauth</artifactId>
@@ -273,7 +273,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>11.1.0</version>
+                        <version>12.1.1</version>
                     </dependency>
                 </dependencies>
                 <executions>
