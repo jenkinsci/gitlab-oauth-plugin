@@ -13,7 +13,7 @@
     <properties>
         <revision>1.24</revision>
         <changelist>-SNAPSHOT</changelist>
-        <jenkins.baseline>2.492</jenkins.baseline>
+        <jenkins.baseline>2.504</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.threshold>Low</spotbugs.threshold>
@@ -71,7 +71,7 @@
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
                 <artifactId>bom-${jenkins.baseline}.x</artifactId>
-                <version>5473.vb_9533d9e5d88</version>
+                <version>5659.vecf9e2dc5a_ed</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
