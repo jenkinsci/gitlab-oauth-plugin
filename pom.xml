@@ -98,7 +98,6 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>jakarta-xml-bind-api</artifactId>
-            <version>4.0.5-3.v3d5b_a_73965b_9</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -107,7 +106,6 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>jackson2-api</artifactId>
-            <version>2.20.0-417.va_5311a_823a_b_8</version>
         </dependency>
     </dependencies>
     <build>
