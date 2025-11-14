@@ -93,7 +93,7 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>gitlab-api</artifactId>
-            <version>6.1.0-106.v6c0b_5b_df4ee6</version>
+            <version>6.2.0-129.v770352b_103a_6</version>
         </dependency>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
