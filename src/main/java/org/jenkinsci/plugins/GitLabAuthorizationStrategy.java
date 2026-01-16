@@ -35,8 +35,8 @@ import hudson.security.ACL;
 import hudson.security.AuthorizationStrategy;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
