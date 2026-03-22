@@ -550,6 +550,13 @@ public class GitLabSecurityRealm extends SecurityRealm {
         public DescriptorImpl(Class<? extends SecurityRealm> clazz) {
             super(clazz);
         }
+
+        public hudson.util.ListBoxModel doFillScopeItems() {
+            hudson.util.ListBoxModel items = new hudson.util.ListBoxModel();
+            items.add("api", "api");
+            items.add("read_api", "read_api");
+            return items;
+        }
     }
 
     // Overridden for better type safety.

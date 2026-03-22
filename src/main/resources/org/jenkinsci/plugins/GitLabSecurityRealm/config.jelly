@@ -20,8 +20,8 @@
             <f:password />
         </f:entry>
 
-        <f:entry title="OAuth Scope(s)" field="scope">
-            <f:textbox default="api" />
+        <f:entry title="OAuth Scope(s)" field="scope" help="/plugin/gitlab-oauth/help/realm/scope-help.html">
+            <f:select default="api" />
         </f:entry>
 
     </f:section>
