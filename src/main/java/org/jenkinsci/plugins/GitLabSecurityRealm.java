@@ -489,16 +489,14 @@ public class GitLabSecurityRealm extends SecurityRealm {
                         if (authentication instanceof GitLabAuthenticationToken) {
                             return authentication;
                         }
-                        if (authentication instanceof UsernamePasswordAuthenticationToken) {
+                        if (authentication instanceof UsernamePasswordAuthenticationToken token) {
                             try {
-                                UsernamePasswordAuthenticationToken token =
-                                        (UsernamePasswordAuthenticationToken) authentication;
                                 GitLabAuthenticationToken gitlab = new GitLabAuthenticationToken(
                                         token.getCredentials().toString(), getGitlabApiUri(), TokenType.PRIVATE);
                                 SecurityContextHolder.getContext().setAuthentication(gitlab);
                                 return gitlab;
                             } catch (GitLabApiException e) {
-                                throw new RuntimeException(e);
+                                throw new BadCredentialsException("Authentication failed", e);
                             }
                         }
                         throw new BadCredentialsException("Unexpected authentication type: " + authentication);
