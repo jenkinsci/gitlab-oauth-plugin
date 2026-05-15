@@ -43,6 +43,7 @@ import hudson.security.GroupDetails;
 import hudson.security.SecurityRealm;
 import hudson.security.UserMayOrMayNotExistException2;
 import hudson.tasks.Mailer;
+import hudson.util.ListBoxModel;
 import hudson.util.Secret;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
@@ -273,7 +274,7 @@ public class GitLabSecurityRealm extends SecurityRealm {
     }
 
     public String getScope() {
-        return StringUtils.isNotBlank(scope) ? scope : "api";
+        return scope;
     }
 
     @DataBoundSetter
@@ -551,8 +552,8 @@ public class GitLabSecurityRealm extends SecurityRealm {
             super(clazz);
         }
 
-        public hudson.util.ListBoxModel doFillScopeItems() {
-            hudson.util.ListBoxModel items = new hudson.util.ListBoxModel();
+        public ListBoxModel doFillScopeItems() {
+            ListBoxModel items = new ListBoxModel();
             items.add("api", "api");
             items.add("read_api", "read_api");
             return items;
