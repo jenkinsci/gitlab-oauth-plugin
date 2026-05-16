@@ -7,9 +7,10 @@ also supported.
 ## Setup
 
 Before configuring the plugin you must create a GitLab application
-registration. In the Scopes section mark **api**.
+registration. In the Scopes section mark **read_api** (recommended) or
+**api**.
 
-the authorization callback URL takes a specific value. It must be
+The authorization callback URL takes a specific value. It must be
 `http://myserver.example.com:8080/securityRealm/finishLogin` where
 myserver.example.com:8080 is the location of the Jenkins server.
 
@@ -28,8 +29,9 @@ realm to authenticate Jenkins users via GitLab OAuth.
     **GitLab Authentication Plugin**.
 2.  The settings to configure are: GitLab Web URI, GitLab API URI,
     Client ID, Client Secret, and OAuth Scope(s).
-3.  If you're using GitLab Enterprise then the API URI is
-    <https://ghe.acme.com/api/v3>. The prefix
+3.  Select the scope configured during GitLab application registration in the **OAuth Scope(s)** dropdown.
+4.  If you're using GitLab Enterprise then the API URI is
+    <https://ghe.acme.com/api/v3>. The prefix
     "[api/v3](https://ghe.acme.com/api/v3)" will be
     completed by the plugin
 
