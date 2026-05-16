@@ -43,6 +43,7 @@ import hudson.security.GroupDetails;
 import hudson.security.SecurityRealm;
 import hudson.security.UserMayOrMayNotExistException2;
 import hudson.tasks.Mailer;
+import hudson.util.ListBoxModel;
 import hudson.util.Secret;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
@@ -77,6 +78,7 @@ import org.gitlab4j.api.models.Group;
 import org.gitlab4j.models.Constants.TokenType;
 import org.jfree.util.Log;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.Header;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
@@ -107,6 +109,7 @@ public class GitLabSecurityRealm extends SecurityRealm {
     private String gitlabApiUri;
     private String clientID;
     private Secret clientSecret;
+    private String scope = "api";
 
     /**
      * @param gitlabWebUri
@@ -199,6 +202,10 @@ public class GitLabSecurityRealm extends SecurityRealm {
             writer.startNode("clientSecret");
             writer.setValue(realm.clientSecret.getEncryptedValue());
             writer.endNode();
+
+            writer.startNode("scope");
+            writer.setValue(realm.getScope());
+            writer.endNode();
         }
 
         @Override
@@ -234,6 +241,9 @@ public class GitLabSecurityRealm extends SecurityRealm {
                 case "gitlabapiuri":
                     realm.setGitlabApiUri(value);
                     break;
+                case "scope":
+                    realm.setScope(value);
+                    break;
                 default:
                     throw new ConversionException("Invalid node value = " + node);
             }
@@ -263,6 +273,15 @@ public class GitLabSecurityRealm extends SecurityRealm {
         return clientSecret;
     }
 
+    public String getScope() {
+        return scope;
+    }
+
+    @DataBoundSetter
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
     // "from" is coming from SecurityRealm/loginLink.jelly
     public HttpResponse doCommenceLogin(
             StaplerRequest2 request, @QueryParameter String from, @Header("Referer") final String referer)
@@ -290,7 +309,7 @@ public class GitLabSecurityRealm extends SecurityRealm {
         parameters.add(new BasicNameValuePair("redirect_uri", buildRedirectUrl(request)));
         parameters.add(new BasicNameValuePair("response_type", "code"));
         parameters.add(new BasicNameValuePair("client_id", clientID));
-        parameters.add(new BasicNameValuePair("scope", "api"));
+        parameters.add(new BasicNameValuePair("scope", getScope()));
         parameters.add(new BasicNameValuePair("state", state));
 
         return new HttpRedirect(
@@ -530,6 +549,13 @@ public class GitLabSecurityRealm extends SecurityRealm {
         public DescriptorImpl(Class<? extends SecurityRealm> clazz) {
             super(clazz);
         }
+
+        public ListBoxModel doFillScopeItems() {
+            ListBoxModel items = new ListBoxModel();
+            items.add("api", "api");
+            items.add("read_api", "read_api");
+            return items;
+        }
     }
 
     // Overridden for better type safety.
@@ -586,6 +612,7 @@ public class GitLabSecurityRealm extends SecurityRealm {
             return this.getGitlabWebUri().equals(obj.getGitlabWebUri())
                     && this.getGitlabApiUri().equals(obj.getGitlabApiUri())
                     && this.getClientID().equals(obj.getClientID())
+                    && this.getScope().equals(obj.getScope())
                     && this.clientSecret.equals(obj.clientSecret);
         } else {
             return false;
