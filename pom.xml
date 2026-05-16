@@ -57,10 +57,6 @@
             <id>repo.jenkins-ci.org</id>
             <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
-        <repository>
-            <id>incrementals</id>
-            <url>https://repo.jenkins-ci.org/incrementals/</url>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -99,7 +95,6 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>gitlab-api</artifactId>
-            <version>6.2.0-125.v4b_82966387db_</version>
         </dependency>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
