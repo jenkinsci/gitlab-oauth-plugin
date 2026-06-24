@@ -30,10 +30,13 @@ realm to authenticate Jenkins users via GitLab OAuth.
 2.  The settings to configure are: GitLab Web URI, GitLab API URI,
     Client ID, Client Secret, and OAuth Scope(s).
 3.  Select the scope configured during GitLab application registration in the **OAuth Scope(s)** dropdown.
-4.  If you're using GitLab Enterprise then the API URI is
-    <https://ghe.acme.com/api/v3>. The prefix
-    "[api/v3](https://ghe.acme.com/api/v3)" will be
-    completed by the plugin
+4.  The **GitLab API URI** must be the **base server URL only** —
+    do not append `/api/v4`. The plugin appends `/api/v4` automatically
+    via the gitlab4j library.
+    - Correct: `https://gitlab.example.com`
+    - Incorrect: `https://gitlab.example.com/api/v4` — causes a doubled
+      path (`/api/v4/api/v4/user`), resulting in a 404 error and an
+      infinite OAuth redirect loop during login.
 
 In the plugin configuration pages each field has a little question mark icon next to it.
 Click on it for help about the setting.
