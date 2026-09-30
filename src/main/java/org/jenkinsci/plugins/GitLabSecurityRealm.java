@@ -639,6 +639,9 @@ public class GitLabSecurityRealm extends SecurityRealm {
         }
 
         Group gitlabGroup = authToken.loadOrganization(groupName);
+        if (gitlabGroup == null) {
+            throw new UsernameNotFoundException("No known group: " + groupName);
+        }
         return new GitLabOAuthGroupDetails(gitlabGroup);
     }
 
