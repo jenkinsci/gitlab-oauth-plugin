@@ -413,6 +413,9 @@ public class GitLabSecurityRealm extends SecurityRealm {
                     }
                 }
                 SecurityListener.fireAuthenticated2(new GitLabOAuthUserDetails(self, auth.getAuthorities()));
+                // Records the GitLab groups on the Jenkins user (LastGrantedAuthoritiesProperty). API token and CLI
+                // requests impersonate the user without a GitLab token and rely on them (JENKINS-75546).
+                SecurityListener.fireLoggedIn(auth.getName());
             } catch (GitLabApiException e) {
                 throw new RuntimeException(e);
             }
