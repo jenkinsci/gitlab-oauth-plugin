@@ -324,7 +324,10 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
 
         this.adminOrganizationNameList = new LinkedList<>();
         parts = adminOrganizationNames.split(",");
-        this.adminOrganizationNameList.addAll(Arrays.asList(parts));
+        for (String part : parts) {
+
+            this.adminOrganizationNameList.add(part.trim());
+        }
 
         this.organizationNameList = new LinkedList<>();
 
