@@ -36,7 +36,6 @@ import hudson.scm.SCM;
 import hudson.security.ACL;
 import hudson.security.Permission;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
