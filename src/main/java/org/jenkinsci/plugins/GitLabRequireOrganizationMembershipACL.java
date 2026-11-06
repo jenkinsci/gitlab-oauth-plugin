@@ -36,7 +36,6 @@ import hudson.scm.SCM;
 import hudson.security.ACL;
 import hudson.security.Permission;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -324,7 +323,10 @@ public class GitLabRequireOrganizationMembershipACL extends ACL {
 
         this.adminOrganizationNameList = new LinkedList<>();
         parts = adminOrganizationNames.split(",");
-        this.adminOrganizationNameList.addAll(Arrays.asList(parts));
+        for (String part : parts) {
+
+            this.adminOrganizationNameList.add(part.trim());
+        }
 
         this.organizationNameList = new LinkedList<>();
 
