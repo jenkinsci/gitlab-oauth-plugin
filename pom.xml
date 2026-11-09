@@ -11,7 +11,7 @@
     <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <properties>
-        <revision>1.31</revision>
+        <revision>1.32</revision>
         <changelist>-SNAPSHOT</changelist>
         <jenkins.baseline>2.528</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
@@ -69,7 +69,7 @@
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
                 <artifactId>bom-${jenkins.baseline}.x</artifactId>
-                <version>5983.v443959746f1f</version>
+                <version>6607.v3ed3d8ddfed8</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -95,6 +95,11 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>gitlab-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
